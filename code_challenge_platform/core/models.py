@@ -3,13 +3,18 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 class CustomUser(AbstractUser):
-    # All necessary fields are already included in AbstractUser, such as:
-    # first_name, last_name, username, email, and password.
-    
-    # If you want to add extra fields, you can define them here:
-    # phone = models.CharField(max_length=15, null=True, blank=True)  # Example custom field
-    
-    pass
+     GENDER_CHOICES = (
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other'),
+    )
 
-    def __str__(self):
-        return self.username  # Or return email or other field, based on preference
+     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
+     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True, blank=True)
+     location = models.CharField(max_length=100, null=True, blank=True)
+     birthday = models.DateField(blank=True, null=True)  
+     skills = models.TextField(null=True, blank=True)  # Can store as a comma-separated list of skills
+
+     def __str__(self):
+        return self.username  
+        

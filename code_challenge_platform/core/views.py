@@ -12,8 +12,9 @@ import random
 from django.conf import settings
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth import get_user_model
-import random
 
+from django.contrib.auth.decorators import login_required
+from django.utils.dateparse import parse_date
 
 def index (request):
     return render(request,'index.html')
@@ -79,7 +80,7 @@ def admin_dashboard(request):
     return render(request,"admin_dashboard.html")
 
 
-def logout(request):
+def logout_view(request):
     logout(request)  
     messages.success(request, "You have been logged out successfully.")
     return redirect('index') 
@@ -145,3 +146,52 @@ def reset_password(request):
             messages.error(request, 'Email address not found in session.')
 
     return render(request, 'reset_password.html')
+
+
+
+
+
+
+@login_required
+def profile_edit(request):
+    user = request.user
+
+    if request.method == "POST":
+        user.first_name = request.POST.get('first_name', '')
+        user.last_name = request.POST.get('last_name', '')
+        user.gender = request.POST.get('gender', '')
+        user.location = request.POST.get('location', '')
+
+        birthday_input = request.POST.get('birthday', '').strip()
+        if birthday_input:
+            user.birthday = parse_date(birthday_input)
+            if user.birthday is None:
+                messages.error(request, "Invalid date format. Use YYYY-MM-DD.")
+                return render(request, 'profile_edit.html', {'user': user})
+        else:
+            user.birthday = None
+
+        user.skills = request.POST.get('skills', '')
+
+        if request.FILES.get('profile_picture'):
+            user.profile_picture = request.FILES['profile_picture']
+
+        user.save()
+        messages.success(request, "Profile updated successfully!")
+        return redirect('profile_view')
+
+    context = {
+        'user': user
+    }
+    return render(request, 'profile_edit.html', context)
+
+
+    context = {
+        'user': user
+    }
+    return render(request, 'profile_edit.html', context)
+
+
+def profile_view(request):
+    user = request.user
+    return render(request, 'profile_view.html', {'user': user})

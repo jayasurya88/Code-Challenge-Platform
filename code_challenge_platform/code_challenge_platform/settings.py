@@ -136,3 +136,9 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'jayasurya7879@gmail.com'
 EMAIL_HOST_PASSWORD = 'snla glpn ippn aazg'
 DEFAULT_FROM_EMAIL = 'your_email@gmail.com'
+
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
+

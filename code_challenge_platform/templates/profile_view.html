@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile View</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h3>User Profile View</h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <!-- Display Profile Picture -->
+                        <div class="mb-3">
+                            {% if user.profile_picture %}
+                                <img src="{{ user.profile_picture.url }}" class="rounded-circle" alt="Profile Picture" width="150" height="150">
+                            {% else %}
+                                <img src="https://via.placeholder.com/150" class="rounded-circle" alt="Default Profile Picture">
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Display Profile Information -->
+                        <p><strong>Username:</strong> {{ user.username }}</p>
+                        <p><strong>First Name:</strong> {{ user.first_name }}</p>
+                        <p><strong>Last Name:</strong> {{ user.last_name }}</p>
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>Gender:</strong> {% if user.gender == 'M' %} Male {% elif user.gender == 'F' %} Female {% else %} Other {% endif %}</p>
+                        <p><strong>Location:</strong> {{ user.location }}</p>
+                        <p><strong>Birthday:</strong> {{ user.birthday }}</p>
+                        <p><strong>Skills:</strong> {{ user.skills }}</p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="{% url 'profile_edit' %}" class="btn btn-primary">Edit Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>
