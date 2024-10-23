@@ -56,6 +56,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+
 def login_view(request):
     if request.method == "POST":
         username_or_email = request.POST.get('username_or_email')
@@ -65,10 +69,25 @@ def login_view(request):
         user = authenticate(request, username=username_or_email, password=password)
         
         if user is not None:
-            login(request, user)
-            return redirect('index')  # Redirect to the home page after successful login
+            login(request, user)  # Log the user in
+            
+            # Check if the user is a superuser
+            if user.is_superuser:
+                return redirect('admin_dashboard')  # Redirect to the admin page
+            else:
+                return redirect('index')  # Redirect to the home page for regular users
         else:
             messages.error(request, "Invalid username or password.")
             return render(request, 'login.html')
 
     return render(request, 'login.html')
+
+
+def admin_dashboard(request):
+    return render(request,"admin_dashboard.html")
+
+from django.contrib.auth import logout
+def logout(request):
+    logout(request)  # Log the user out
+    messages.success(request, "You have been logged out successfully.")
+    return redirect('index') 
