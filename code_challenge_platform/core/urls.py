@@ -14,6 +14,12 @@ urlpatterns = [
     path('profile_view/', views.profile_view, name='profile_view'),
     path('profile_edit/', views.profile_edit, name='profile_edit'),
     
+
+    path('add-challenge/', views.add_challenge, name='add_challenge'),
+    path('challenges/', views.challenge_list, name='challenge_list'), 
+    path('challenge/<int:id>/', views.challenge_detail, name='challenge_detail'),
+    path('challenge/<int:id>/take/', views.take_challenge, name='take_challenge'),
+    
  
     
 ]

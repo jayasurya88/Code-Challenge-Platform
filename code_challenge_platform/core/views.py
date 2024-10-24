@@ -12,6 +12,7 @@ import random
 from django.conf import settings
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth import get_user_model
+from .models import Challenge
 
 from django.contrib.auth.decorators import login_required
 from django.utils.dateparse import parse_date
@@ -78,6 +79,32 @@ def login_view(request):
 
 def admin_dashboard(request):
     return render(request,"admin_dashboard.html")
+
+
+# views.py
+def add_challenge(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        difficulty = request.POST.get('difficulty')
+        input_format = request.POST.get('input_format')
+        output_format = request.POST.get('output_format')
+        examples = request.POST.get('examples')
+
+        # Create and save a new Challenge object
+        new_challenge = Challenge(
+            title=title,
+            description=description,
+            difficulty=difficulty,
+            input_format=input_format,
+            output_format=output_format,
+            examples=examples
+        )
+        new_challenge.save()
+        return redirect('admin_dashboard')  # Redirect to the admin dashboard after adding
+
+    return render(request, 'admin_add_challenge.html')  # Updated template name
+
 
 
 def logout_view(request):
@@ -195,3 +222,26 @@ def profile_edit(request):
 def profile_view(request):
     user = request.user
     return render(request, 'profile_view.html', {'user': user})
+
+
+
+
+# views.py
+from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
+from .models import Challenge
+
+def challenge_list(request):
+    challenges = Challenge.objects.all()  # Fetch all Challenge objects
+    return render(request, 'challenge_list.html', {'challenges': challenges})
+
+
+def challenge_detail(request, id):
+    challenge = get_object_or_404(Challenge, id=id)
+    return render(request, 'challenge_detail.html', {'challenge': challenge})
+
+
+
+def take_challenge(request, id):
+    challenge = get_object_or_404(Challenge, id=id)
+    return render(request, 'take_challenge.html', {'challenge': challenge})

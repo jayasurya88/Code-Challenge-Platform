@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Code Challenge Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 </head>
 <body>
-    Code challenge platform
+    <div class="container text-center">
+        <h1 class="mt-5">Code Challenge Platform</h1>
+        <a href="{% url 'challenge_list' %}" class="btn btn-primary mt-3">View Challenges</a> <!-- Button to redirect to the challenge list -->
+    </div>
 </body>
 </html>

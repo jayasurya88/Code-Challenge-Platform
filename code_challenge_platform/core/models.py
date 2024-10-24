@@ -1,7 +1,7 @@
 # models.py
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from django.contrib.auth.models import User
 class CustomUser(AbstractUser):
      GENDER_CHOICES = (
         ('M', 'Male'),
@@ -18,3 +18,21 @@ class CustomUser(AbstractUser):
      def __str__(self):
         return self.username  
         
+
+# models.py
+from django.db import models
+
+class Challenge(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    difficulty = models.CharField(max_length=20, choices=[('Easy', 'Easy'), ('Medium', 'Medium'), ('Hard', 'Hard')])
+    input_format = models.TextField()
+    output_format = models.TextField()
+    examples = models.TextField()
+
+    def __str__(self):
+        return self.title
+
+
+
+
