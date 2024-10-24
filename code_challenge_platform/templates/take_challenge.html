@@ -9,22 +9,32 @@
         .container {
             display: flex;
             justify-content: space-between;
+            height: 100vh; /* Full height of the viewport */
         }
         .description {
             flex: 1;
             padding: 20px;
             max-height: 500px; /* Set height for scrolling */
             overflow-y: auto;
+            border-right: 1px solid #ddd; /* Add a separator */
         }
         .editor {
             flex: 1;
             padding: 20px;
         }
+        .output {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9; /* Light background for the output */
+            height: 200px; /* Fixed height for the output area */
+            overflow-y: auto; /* Enable scrolling */
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="description border">
+        <div class="description">
             <h1>{{ challenge.title }}</h1>
             <p><strong>Difficulty:</strong> {{ challenge.difficulty }}</p>
             <p><strong>Description:</strong></p>
@@ -33,7 +43,7 @@
             <p><strong>Output Format:</strong> {{ challenge.output_format }}</p>
             <p><strong>Examples:</strong> {{ challenge.examples }}</p>
         </div>
-        <div class="editor border">
+        <div class="editor">
             <h2>Code Editor</h2>
             <label for="language">Select Language:</label>
             <select id="language" class="form-select mb-3">
@@ -43,9 +53,27 @@
                 <option value="c++">C++</option>
                 <!-- Add more languages as needed -->
             </select>
-            <textarea id="code" rows="20" class="form-control" placeholder="Write your code here..."></textarea>
+            <textarea id="code" rows="15" class="form-control" placeholder="Write your code here..."></textarea>
             <button class="btn btn-primary mt-3">Submit Code</button>
+
+            <h3 class="mt-4">Output:</h3>
+            <div class="output" id="output">
+                <!-- Output will be displayed here -->
+                <p>Output will appear here after code execution.</p>
+            </div>
         </div>
     </div>
+
+    <script>
+        // JavaScript to handle the code submission and display output (optional)
+        document.querySelector('.btn-primary').addEventListener('click', function() {
+            const code = document.getElementById('code').value;
+            const language = document.getElementById('language').value;
+            
+            // Simulate code execution (this part would normally involve backend processing)
+            document.getElementById('output').innerHTML = `<p>Executing ${language} code...</p><pre>${code}</pre>`;
+            // Here you would call your backend API to evaluate the code and return output
+        });
+    </script>
 </body>
 </html>

@@ -245,3 +245,48 @@ def challenge_detail(request, id):
 def take_challenge(request, id):
     challenge = get_object_or_404(Challenge, id=id)
     return render(request, 'take_challenge.html', {'challenge': challenge})
+
+
+
+from django.shortcuts import get_object_or_404
+
+# Edit Challenge
+@login_required
+def edit_challenge(request, challenge_id):
+    challenge = get_object_or_404(Challenge, id=challenge_id)
+    
+    if request.method == 'POST':
+        challenge.title = request.POST.get('title')
+        challenge.description = request.POST.get('description')
+        challenge.difficulty = request.POST.get('difficulty')
+        challenge.input_format = request.POST.get('input_format')
+        challenge.output_format = request.POST.get('output_format')
+        challenge.examples = request.POST.get('examples')
+        challenge.save()
+        messages.success(request, "Challenge updated successfully!")
+        return redirect('admin_dashboard')  # Redirect to admin dashboard
+
+    context = {
+        'challenge': challenge
+    }
+    return render(request, 'admin_edit_challenge.html', context)
+
+# Delete Challenge
+@login_required
+def delete_challenge(request, challenge_id):
+    challenge = get_object_or_404(Challenge, id=challenge_id)
+    
+    if request.method == 'POST':
+        challenge.delete()
+        messages.success(request, "Challenge deleted successfully!")
+        return redirect('admin_dashboard')  # Redirect to admin dashboard
+
+    context = {
+        'challenge': challenge
+    }
+    return render(request, 'admin_delete_challenge.html', context)
+
+
+def admin_challenge_list(request):
+    challenges = Challenge.objects.all()  # Fetch all challenges from the database
+    return render(request, 'admin_challenge_list.html', {'challenges': challenges})
