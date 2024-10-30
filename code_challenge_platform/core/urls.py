@@ -22,7 +22,13 @@ urlpatterns = [
     path('edit-challenge/<int:challenge_id>/', views.edit_challenge, name='edit_challenge'),
     path('delete-challenge/<int:challenge_id>/', views.delete_challenge, name='delete_challenge'),
     path('admin_challenges/', views.admin_challenge_list, name='admin_challenge_list'),
+    path('challenge/<int:challenge_id>/code_editor/', views.code_editor, name='code_editor'),
+    path('challenge/<int:challenge_id>/submit/', views.submit_code, name='submit_code'),
+    path("result/<str:token>/", views.get_result, name="get_result"),
+    path('challenge/<int:challenge_id>/code_editor/', views.code_editor, name='code_editor'),
+    # Other URL patterns...
+
     
  
-    
+    path('challenge/<int:challenge_id>/code_editor/', views.code_editor, name='code_editor'),
 ]

@@ -82,6 +82,9 @@ def admin_dashboard(request):
 
 
 # views.py
+from django.shortcuts import render, redirect
+from .models import Challenge, TestCase  # Make sure you have the TestCase model imported
+
 def add_challenge(request):
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -100,10 +103,31 @@ def add_challenge(request):
             output_format=output_format,
             examples=examples
         )
-        new_challenge.save()
+        new_challenge.save()  # Save the challenge first to get an ID for the test cases
+
+        # Loop through the input test cases and expected outputs
+        test_case_count = 1
+        while True:
+            input_key = f'input_test_case_{test_case_count}'
+            expected_key = f'expected_output_test_case_{test_case_count}'
+            if input_key not in request.POST or expected_key not in request.POST:
+                break  # Exit loop if no more test cases are found
+
+            input_data = request.POST.get(input_key)
+            expected_output = request.POST.get(expected_key)
+
+            # Create and save each test case
+            TestCase.objects.create(
+                challenge=new_challenge,
+                input_data=input_data,
+                expected_output=expected_output
+            )
+            test_case_count += 1  # Move to the next test case number
+
         return redirect('admin_dashboard')  # Redirect to the admin dashboard after adding
 
-    return render(request, 'admin_add_challenge.html')  # Updated template name
+    return render(request, 'admin_add_challenge.html')
+
 
 
 
@@ -238,9 +262,11 @@ def challenge_list(request):
 
 def challenge_detail(request, id):
     challenge = get_object_or_404(Challenge, id=id)
-    return render(request, 'challenge_detail.html', {'challenge': challenge})
-
-
+    test_cases = challenge.test_cases.all()  # Retrieve related test cases
+    return render(request, 'challenge_detail.html', {
+        'challenge': challenge,
+        'test_cases': test_cases,  # Pass test cases to the template
+    })
 
 def take_challenge(request, id):
     challenge = get_object_or_404(Challenge, id=id)
@@ -248,7 +274,6 @@ def take_challenge(request, id):
 
 
 
-from django.shortcuts import get_object_or_404
 
 # Edit Challenge
 @login_required
@@ -290,3 +315,179 @@ def delete_challenge(request, challenge_id):
 def admin_challenge_list(request):
     challenges = Challenge.objects.all()  # Fetch all challenges from the database
     return render(request, 'admin_challenge_list.html', {'challenges': challenges})
+
+# editor/views.py
+import requests
+import base64
+from django.shortcuts import render
+from django.http import JsonResponse
+# rohit code         756e517a77msh58ac762d967fff7p128ae3jsnc233287d404d
+#jayasurya           8ede8ff6dcmshcc206ea377c20c6p1db6bfjsnd3bcd1169d5e
+RAPIDAPI_KEY = "756e517a77msh58ac762d967fff7p128ae3jsnc233287d404d"
+API_HOST = "judge0-ce.p.rapidapi.com"
+
+# In views.py
+from django.shortcuts import render, get_object_or_404
+from .models import Challenge
+
+def code_editor(request, challenge_id):
+    challenge = get_object_or_404(Challenge, id=challenge_id)
+    context = {
+        "challenge": challenge
+    }
+    return render(request, "code_editor.html", context)
+
+
+# editor/views.py
+# editor/views.py
+
+LANGUAGE_IDS = {
+    "cpp": 52,         # C++
+    "python": 71,      # Python
+    "java": 62,        # Java
+    "javascript": 63   # JavaScript
+}
+
+# def submit_code(request):
+#     if request.method == "POST":
+#         source_code = request.POST.get("source_code")
+#         user_input = request.POST.get("user_input", "")  # Get user input, default to empty string
+#         language = request.POST.get("language")  # Get selected language
+        
+#         if language not in LANGUAGE_IDS:
+#             return JsonResponse({"error": "Unsupported language"}, status=400)
+        
+#         if source_code:
+#             encoded_code = base64.b64encode(source_code.encode("utf-8")).decode("utf-8")
+#             encoded_input = base64.b64encode(user_input.encode("utf-8")).decode("utf-8")  # Encode user input
+#             payload = {
+#                 "language_id": LANGUAGE_IDS[language],  # Use the corresponding language ID
+#                 "source_code": encoded_code,
+#                 "stdin": encoded_input,  # Use encoded user input
+#                 "base64_encoded": "true"
+#             }
+#             headers = {
+#                 "x-rapidapi-key": RAPIDAPI_KEY,
+#                 "x-rapidapi-host": API_HOST,
+#                 "Content-Type": "application/json"
+#             }
+#             response = requests.post(f"https://{API_HOST}/submissions", json=payload, headers=headers)
+#             if response.status_code == 201:
+#                 token = response.json().get("token")
+#                 return JsonResponse({"token": token})
+#             else:
+#                 return JsonResponse({"error": "Failed to submit code", "details": response.json()}, status=400)
+#         else:
+#             return JsonResponse({"error": "No source code provided"}, status=400)
+    
+#     return JsonResponse({"error": "Invalid request method"}, status=405)
+
+import base64
+import requests
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+
+def submit_code(request, challenge_id):
+    if request.method == "POST":
+        challenge = get_object_or_404(Challenge, id=challenge_id)
+        source_code = request.POST.get("source_code")
+        language = request.POST.get("language")
+
+        if language not in LANGUAGE_IDS:
+            return JsonResponse({"error": "Unsupported language"}, status=400)
+
+        # Retrieve all test cases for the challenge
+        test_cases = challenge.test_cases.all()
+        results = []
+
+        for test_case in test_cases:
+            payload = {
+                "language_id": LANGUAGE_IDS[language],
+                "source_code": base64.b64encode(source_code.encode("utf-8")).decode("utf-8"),
+                "stdin": base64.b64encode(test_case.input_data.encode("utf-8")).decode("utf-8"),
+                "base64_encoded": "true"
+            }
+            headers = {
+                "x-rapidapi-key": RAPIDAPI_KEY,
+                "x-rapidapi-host": API_HOST,
+                "Content-Type": "application/json"
+            }
+
+            # Make the API call to submit the code
+            response = requests.post(f"https://{API_HOST}/submissions", json=payload, headers=headers)
+            print("Submission API response:", response.json())  # Log the response
+
+            if response.status_code == 201:
+                token = response.json().get("token")
+                result = get_result(token)  # Helper function to get result
+
+                # Log the result object for debugging
+                print("Result object:", result)  # Log the result
+
+                # Decode the output
+                output, error_output, compile_output = decode_outputs(result)
+
+                # Expected output from the test case
+                expected_output = test_case.expected_output.strip() if test_case.expected_output else ""
+
+                # Determine if the test case passed or failed
+                if error_output:
+                    status = "Runtime Error"
+                elif compile_output:
+                    status = "Compilation Error"
+                elif output.strip() == expected_output:
+                    status = "Accepted"
+                else:
+                    status = "Wrong Answer"
+
+                results.append({
+                    "input": test_case.input_data,
+                    "expected": expected_output,
+                    "output": output,
+                    "status": status
+                })
+            else:
+                results.append({"error": "Code submission failed."})
+
+        return JsonResponse({"results": results})
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+def get_result(token):
+    headers = {
+        "x-rapidapi-key": RAPIDAPI_KEY,
+        "x-rapidapi-host": API_HOST
+    }
+    params = {"base64_encoded": "true"}  # Ensure all outputs are Base64 encoded
+    response = requests.get(f"https://{API_HOST}/submissions/{token}", headers=headers, params=params)
+
+    # Log the response for debugging
+    print("Get result API response:", response.json())  # Log the full API response for analysis
+
+    return response.json()
+
+def decode_outputs(result):
+    # Decode stdout, stderr, and compile_output safely
+    try:
+        output = base64.b64decode(result.get("stdout", "")).decode("utf-8") if result.get("stdout") else "No output"
+        error_output = base64.b64decode(result.get("stderr", "")).decode("utf-8") if result.get("stderr") else None
+        compile_output = base64.b64decode(result.get("compile_output", "")).decode("utf-8") if result.get("compile_output") else None
+    except Exception as e:
+        # Log any decoding exceptions
+        print("Decoding error:", e)
+        output = "Failed to decode output"
+        error_output = None
+        compile_output = None
+    
+    return output, error_output, compile_output
+
+
+
+def add_padding(b64_string):
+    # Only add padding if b64_string is non-empty and a multiple of 4 is required
+    if b64_string:
+        missing_padding = len(b64_string) % 4
+        if missing_padding:
+            b64_string += '=' * (4 - missing_padding)
+    return b64_string
+

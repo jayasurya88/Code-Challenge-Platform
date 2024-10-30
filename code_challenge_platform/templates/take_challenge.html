@@ -2,78 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Take Challenge - {{ challenge.title }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <title>{{ challenge.title }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.0/mode/python/python.min.js"></script>
     <style>
-        .container {
-            display: flex;
-            justify-content: space-between;
-            height: 100vh; /* Full height of the viewport */
-        }
-        .description {
-            flex: 1;
-            padding: 20px;
-            max-height: 500px; /* Set height for scrolling */
-            overflow-y: auto;
-            border-right: 1px solid #ddd; /* Add a separator */
-        }
-        .editor {
-            flex: 1;
-            padding: 20px;
-        }
-        .output {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9; /* Light background for the output */
-            height: 200px; /* Fixed height for the output area */
-            overflow-y: auto; /* Enable scrolling */
-        }
+        .CodeMirror { height: auto; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="description">
-            <h1>{{ challenge.title }}</h1>
-            <p><strong>Difficulty:</strong> {{ challenge.difficulty }}</p>
-            <p><strong>Description:</strong></p>
-            <div class="scrollable">{{ challenge.description }}</div>
-            <p><strong>Input Format:</strong> {{ challenge.input_format }}</p>
-            <p><strong>Output Format:</strong> {{ challenge.output_format }}</p>
-            <p><strong>Examples:</strong> {{ challenge.examples }}</p>
-        </div>
-        <div class="editor">
-            <h2>Code Editor</h2>
-            <label for="language">Select Language:</label>
-            <select id="language" class="form-select mb-3">
-                <option value="python">Python</option>
-                <option value="javascript">JavaScript</option>
-                <option value="java">Java</option>
-                <option value="c++">C++</option>
-                <!-- Add more languages as needed -->
-            </select>
-            <textarea id="code" rows="15" class="form-control" placeholder="Write your code here..."></textarea>
-            <button class="btn btn-primary mt-3">Submit Code</button>
+    <h1>{{ challenge.title }}</h1>
+    <p>{{ challenge.description }}</p>
+    <h3>Test Cases:</h3>
+    <ul>
+        {% for test_case in test_cases %}
+            <li>Input: {{ test_case.input_data }} | Expected Output: {{ test_case.expected_output }}</li>
+        {% endfor %}
+    </ul>
 
-            <h3 class="mt-4">Output:</h3>
-            <div class="output" id="output">
-                <!-- Output will be displayed here -->
-                <p>Output will appear here after code execution.</p>
-            </div>
-        </div>
-    </div>
+    <form method="POST" id="code-form">
+        {% csrf_token %}
+        <textarea id="code" name="source_code"></textarea>
+        <select name="language" id="language">
+            <option value="python">Python</option>
+            <option value="cpp">C++</option>
+            <option value="java">Java</option>
+            <option value="javascript">JavaScript</option>
+        </select>
+        <button type="submit">Submit</button>
+    </form>
 
     <script>
-        // JavaScript to handle the code submission and display output (optional)
-        document.querySelector('.btn-primary').addEventListener('click', function() {
-            const code = document.getElementById('code').value;
-            const language = document.getElementById('language').value;
-            
-            // Simulate code execution (this part would normally involve backend processing)
-            document.getElementById('output').innerHTML = `<p>Executing ${language} code...</p><pre>${code}</pre>`;
-            // Here you would call your backend API to evaluate the code and return output
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+            lineNumbers: true,
+            mode: "python"  // Set default mode
         });
+
+        document.getElementById("code-form").onsubmit = function(event) {
+            event.preventDefault();
+            var source_code = editor.getValue();
+            var user_input = ""; // You may want to collect this from your UI
+            var language = document.getElementById("language").value;
+
+            fetch("{% url 'submit_code' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    source_code: source_code,
+                    user_input: user_input,
+                    language: language
+                })
+            }).then(response => response.json()).then(data => {
+                console.log(data);
+                // Handle the response (display output/errors)
+            }).catch(error => console.error('Error:', error));
+        };
     </script>
 </body>
 </html>

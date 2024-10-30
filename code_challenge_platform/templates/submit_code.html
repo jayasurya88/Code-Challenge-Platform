@@ -1,0 +1,29 @@
+<!-- templates/submit_code.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Compiler</title>
+</head>
+<body>
+    <h1>Submit Your Code</h1>
+    <form method="POST" action="{% url 'submit_code' %}">
+        {% csrf_token %}
+        <label for="source_code">Source Code:</label><br>
+        <textarea id="source_code" name="source_code" rows="10" cols="50" required></textarea><br><br>
+
+        <label for="stdin">Input (stdin):</label><br>
+        <input type="text" id="stdin" name="stdin"><br><br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    {% if result %}
+        <h2>Result:</h2>
+        <pre>{{ result.stdout }}</pre>
+        <pre style="color: red;">{{ result.stderr }}</pre>
+        <p>Status: {{ result.status.description }}</p>
+    {% endif %}
+</body>
+</html>

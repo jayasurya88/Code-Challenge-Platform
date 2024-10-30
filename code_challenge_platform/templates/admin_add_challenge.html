@@ -5,6 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Add Challenge</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script>
+        // Function to dynamically add test case fields
+        function addTestCase() {
+            const testCaseContainer = document.getElementById('testCases');
+            const testCaseCount = testCaseContainer.children.length / 2; // Two inputs per test case (input and expected output)
+
+            // Create input for the test case
+            const inputField = document.createElement('textarea');
+            inputField.className = 'form-control mb-2';
+            inputField.name = `input_test_case_${testCaseCount + 1}`; // Dynamic naming
+            inputField.placeholder = 'Enter input for test case...';
+            testCaseContainer.appendChild(inputField);
+
+            // Create expected output field for the test case
+            const expectedField = document.createElement('textarea');
+            expectedField.className = 'form-control mb-2';
+            expectedField.name = `expected_output_test_case_${testCaseCount + 1}`; // Dynamic naming
+            expectedField.placeholder = 'Enter expected output for test case...';
+            testCaseContainer.appendChild(expectedField);
+        }
+    </script>
 </head>
 <body>
     <div class="container mt-4">
@@ -40,7 +61,14 @@
                 <label for="examples" class="form-label">Examples</label>
                 <textarea name="examples" class="form-control" required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Add Challenge</button>
+            
+            <h5>Test Cases</h5>
+            <div id="testCases" class="mb-3">
+                <textarea name="input_test_case_1" class="form-control mb-2" placeholder="Enter input for test case..." required></textarea>
+                <textarea name="expected_output_test_case_1" class="form-control mb-2" placeholder="Enter expected output for test case..." required></textarea>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="addTestCase()">Add Another Test Case</button>
+            <button type="submit" class="btn btn-primary mt-3">Add Challenge</button>
         </form>
     </div>
 

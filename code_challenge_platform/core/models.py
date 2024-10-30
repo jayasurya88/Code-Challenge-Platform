@@ -33,6 +33,9 @@ class Challenge(models.Model):
     def __str__(self):
         return self.title
 
-
+class TestCase(models.Model):
+    challenge = models.ForeignKey(Challenge, related_name='test_cases', on_delete=models.CASCADE)
+    input_data = models.TextField()
+    expected_output = models.TextField()
 
 

@@ -17,12 +17,33 @@
         <h1 class="mt-5">{{ challenge.title }}</h1>
         <p><strong>Difficulty:</strong> {{ challenge.difficulty }}</p>
         <p><strong>Description:</strong></p>
-        <div class="scrollable border p-2">{{ challenge.description }}</div>
-        <p><strong>Input Format:</strong> {{ challenge.input_format }}</p>
-        <p><strong>Output Format:</strong> {{ challenge.output_format }}</p>
-        <p><strong>Examples:</strong> {{ challenge.examples }}</p>
-        <a href="{% url 'challenge_list' %}" class="btn btn-primary">Back to Challenge List</a>
-        <a href="{% url 'take_challenge' challenge.id %}" class="btn btn-success">Take Challenge</a>
+        <div class="scrollable border p-2 mb-4">{{ challenge.description }}</div>
+
+        <p><strong>Input Format:</strong></p>
+        <div class="scrollable border p-2 mb-4">{{ challenge.input_format }}</div>
+
+        <p><strong>Output Format:</strong></p>
+        <div class="scrollable border p-2 mb-4">{{ challenge.output_format }}</div>
+
+        <p><strong>Examples:</strong></p>
+        <div class="scrollable border p-2 mb-4">{{ challenge.examples }}</div>
+
+        <p><strong>Test Cases:</strong></p>
+<div class="scrollable border p-2 mb-4">
+    {% for test_case in test_cases %}
+        <p><strong>Input:</strong> {{ test_case.input_data }}</p>
+        <p><strong>Expected Output:</strong> {{ test_case.expected_output }}</p>
+        <hr>
+    {% empty %}
+        <p>No test cases available.</p>
+    {% endfor %}
+</div>
+
+
+        <div class="mt-4">
+            <a href="{% url 'challenge_list' %}" class="btn btn-primary">Back to Challenge List</a>
+            <a href="{% url 'code_editor' challenge.id %}" class="btn btn-success">do challenge</a>
+        </div>
     </div>
 </body>
 </html>
