@@ -6,85 +6,54 @@
     <title>Code Editor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <script>
-        // Predefined code snippets for each language
-        const predefinedCodes = {
-            "cpp": `#include <iostream>
-using namespace std;
-
-int main() {
-    cout << "Hello, World!" << endl;
-    return 0;
-}`,
-            "python": `print("Hello, World!")`,
-            "java": `class HelloWorld {
-    public static void main(String[] args) {
-        System.out.println("Hello, World!");
-    }
-}`,
-            "javascript": `console.log("Hello, World!");`
-        };
-
-        // Function to set predefined code in the textarea based on selected language
-        function setPredefinedCode() {
-            const language = document.getElementById("languageSelector").value;
-            document.getElementById("sourceCode").value = predefinedCodes[language];
-        }
-
-        // Function to escape HTML in test case results for safe display
         function escapeHTML(html) {
             const div = document.createElement('div');
             div.appendChild(document.createTextNode(html));
             return div.innerHTML;
         }
 
-        // Function to submit code to the server with improved error handling and feedback
         async function submitCode() {
-    const sourceCode = document.getElementById("sourceCode").value;
-    const userInput = document.getElementById("userInput").value;
-    const language = document.getElementById("languageSelector").value;
+            const sourceCode = document.getElementById("sourceCode").value;
+            const userInput = document.getElementById("userInput").value;
+            const language = document.getElementById("languageSelector").value;
 
-    // Show loading feedback
-    document.getElementById("testCaseResults").textContent = "Running code...";
+            document.getElementById("testCaseResults").textContent = "Running code...";
 
-    try {
-        const response = await fetch("{% url 'submit_code' challenge.id %}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "X-CSRFToken": "{{ csrf_token }}"
-            },
-            body: new URLSearchParams({
-                "source_code": sourceCode,
-                "user_input": userInput,
-                "language": language
-            })
-        });
+            try {
+                const response = await fetch("{% url 'submit_code' challenge.id %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: new URLSearchParams({
+                        "source_code": sourceCode,
+                        "user_input": userInput,
+                        "language": language
+                    })
+                });
 
-        // Check if response is JSON
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-            const result = await response.json();
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    const result = await response.json();
 
-            if (result.results) {
-                displayTestCaseResults(result.results);
-            } else {
-                document.getElementById("testCaseResults").textContent = `Error: ${result.error || "Failed to submit code."}`;
+                    if (result.results) {
+                        displayTestCaseResults(result.results);
+                    } else {
+                        document.getElementById("testCaseResults").textContent = `Error: ${result.error || "Failed to submit code."}`;
+                    }
+                } else {
+                    const text = await response.text();
+                    document.getElementById("testCaseResults").innerHTML = `Error: Received non-JSON response.<br><pre>${text}</pre>`;
+                }
+            } catch (error) {
+                document.getElementById("testCaseResults").textContent = `Error: ${error.message || "An unexpected error occurred."}`;
             }
-        } else {
-            // Handle non-JSON response (likely an error HTML page)
-            const text = await response.text();
-            document.getElementById("testCaseResults").innerHTML = `Error: Received non-JSON response.<br><pre>${text}</pre>`;
         }
-    } catch (error) {
-        document.getElementById("testCaseResults").textContent = `Error: ${error.message || "An unexpected error occurred."}`;
-    }
-}
 
-
-        // Function to display test case results
         function displayTestCaseResults(results) {
             const resultsContainer = document.getElementById("testCaseResults");
-            resultsContainer.innerHTML = "";  // Clear previous results
+            resultsContainer.innerHTML = "";
 
             results.forEach((testCase, index) => {
                 const resultDiv = document.createElement("div");
@@ -100,19 +69,15 @@ int main() {
                 resultsContainer.appendChild(resultDiv);
             });
         }
-
-        // Set default code when page loads
-        window.onload = setPredefinedCode;
     </script>
 </head>
 <body class="bg-light">
     <div class="container mt-5">
         <h1 class="text-center">Online Code Editor</h1>
         
-        <!-- Language Selector -->
         <div class="mb-3">
             <label for="languageSelector" class="form-label">Select Language:</label>
-            <select id="languageSelector" class="form-select" onchange="setPredefinedCode()">
+            <select id="languageSelector" class="form-select">
                 <option value="cpp">C++</option>
                 <option value="python">Python</option>
                 <option value="java">Java</option>
@@ -123,24 +88,20 @@ int main() {
         <!-- Code Editor Textarea -->
         <div class="mb-3">
             <label for="sourceCode" class="form-label">Enter your code:</label>
-            <textarea id="sourceCode" class="form-control" rows="10" placeholder="Enter your code here..."></textarea>
+            <textarea id="sourceCode" class="form-control" rows="10" placeholder="Enter your code here...">{{ template_code|safe }}</textarea>
         </div>
 
-        <!-- User Input Textarea -->
         <div class="mb-3">
             <label for="userInput" class="form-label">Enter input:</label>
             <textarea id="userInput" class="form-control" rows="3" placeholder="Enter your input here..."></textarea>
         </div>
 
-        <!-- Run Code Button -->
         <button class="btn btn-primary" onclick="submitCode()">Run Code</button>
 
-        <!-- Output Section -->
         <h2 class="mt-4">Test Case Results:</h2>
         <div id="testCaseResults" class="bg-white p-3 border rounded"></div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
 </body>

@@ -29,6 +29,7 @@ class Challenge(models.Model):
     input_format = models.TextField()
     output_format = models.TextField()
     examples = models.TextField()
+    template_code = models.TextField(default="") 
 
     def __str__(self):
         return self.title

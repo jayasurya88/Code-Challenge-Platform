@@ -3,46 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Add Challenge</title>
+    <title>Add Challenge</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <script>
-        // Function to dynamically add test case fields
-        function addTestCase() {
-            const testCaseContainer = document.getElementById('testCases');
-            const testCaseCount = testCaseContainer.children.length / 2; // Two inputs per test case (input and expected output)
-
-            // Create input for the test case
-            const inputField = document.createElement('textarea');
-            inputField.className = 'form-control mb-2';
-            inputField.name = `input_test_case_${testCaseCount + 1}`; // Dynamic naming
-            inputField.placeholder = 'Enter input for test case...';
-            testCaseContainer.appendChild(inputField);
-
-            // Create expected output field for the test case
-            const expectedField = document.createElement('textarea');
-            expectedField.className = 'form-control mb-2';
-            expectedField.name = `expected_output_test_case_${testCaseCount + 1}`; // Dynamic naming
-            expectedField.placeholder = 'Enter expected output for test case...';
-            testCaseContainer.appendChild(expectedField);
-        }
-    </script>
 </head>
 <body>
-    <div class="container mt-4">
-        <h1>Admin Add Challenge</h1>
-        <form method="post">
+    <div class="container my-5">
+        <h2>Add New Challenge</h2>
+        <form method="POST">
             {% csrf_token %}
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
-                <input type="text" name="title" class="form-control" required>
+                <input type="text" class="form-control" id="title" name="title" required>
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
-                <textarea name="description" class="form-control" required></textarea>
+                <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
             </div>
             <div class="mb-3">
                 <label for="difficulty" class="form-label">Difficulty</label>
-                <select name="difficulty" class="form-control" required>
+                <select class="form-select" id="difficulty" name="difficulty" required>
                     <option value="">Select Difficulty</option>
                     <option value="Easy">Easy</option>
                     <option value="Medium">Medium</option>
@@ -51,29 +30,58 @@
             </div>
             <div class="mb-3">
                 <label for="input_format" class="form-label">Input Format</label>
-                <textarea name="input_format" class="form-control" required></textarea>
+                <textarea class="form-control" id="input_format" name="input_format" rows="3" required></textarea>
             </div>
             <div class="mb-3">
                 <label for="output_format" class="form-label">Output Format</label>
-                <textarea name="output_format" class="form-control" required></textarea>
+                <textarea class="form-control" id="output_format" name="output_format" rows="3" required></textarea>
             </div>
             <div class="mb-3">
                 <label for="examples" class="form-label">Examples</label>
-                <textarea name="examples" class="form-control" required></textarea>
+                <textarea class="form-control" id="examples" name="examples" rows="3" required></textarea>
             </div>
-            
-            <h5>Test Cases</h5>
-            <div id="testCases" class="mb-3">
-                <textarea name="input_test_case_1" class="form-control mb-2" placeholder="Enter input for test case..." required></textarea>
-                <textarea name="expected_output_test_case_1" class="form-control mb-2" placeholder="Enter expected output for test case..." required></textarea>
+            <div class="mb-3">
+                <label for="template_code" class="form-label">Template Code</label>
+                <textarea class="form-control" id="template_code" name="template_code" rows="5" required></textarea>
+            </div>
+
+            <h4>Test Cases</h4>
+            <div id="test-cases-container">
+                <div class="mb-3">
+                    <label for="input_test_case_1" class="form-label">Input Test Case 1</label>
+                    <textarea class="form-control" id="input_test_case_1" name="input_test_case_1" rows="2"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="expected_output_test_case_1" class="form-label">Expected Output Test Case 1</label>
+                    <textarea class="form-control" id="expected_output_test_case_1" name="expected_output_test_case_1" rows="2"></textarea>
+                </div>
             </div>
             <button type="button" class="btn btn-secondary" onclick="addTestCase()">Add Another Test Case</button>
+
             <button type="submit" class="btn btn-primary mt-3">Add Challenge</button>
         </form>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script>
+        let testCaseCount = 1;
+        function addTestCase() {
+            testCaseCount++;
+            const container = document.getElementById('test-cases-container');
+            const testCaseHtml = `
+                <div class="mb-3">
+                    <label for="input_test_case_${testCaseCount}" class="form-label">Input Test Case ${testCaseCount}</label>
+                    <textarea class="form-control" id="input_test_case_${testCaseCount}" name="input_test_case_${testCaseCount}" rows="2"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="expected_output_test_case_${testCaseCount}" class="form-label">Expected Output Test Case ${testCaseCount}</label>
+                    <textarea class="form-control" id="expected_output_test_case_${testCaseCount}" name="expected_output_test_case_${testCaseCount}" rows="2"></textarea>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', testCaseHtml);
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-eMNp3Z9G1GAx0dL5U1kk4D2UZZkA4XOXdyGG0tl1a2gQItKD9Y7Lybv15I70ZlD" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 </body>
 </html>

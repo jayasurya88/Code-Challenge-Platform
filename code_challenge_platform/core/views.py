@@ -84,7 +84,6 @@ def admin_dashboard(request):
 # views.py
 from django.shortcuts import render, redirect
 from .models import Challenge, TestCase  # Make sure you have the TestCase model imported
-
 def add_challenge(request):
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -93,6 +92,7 @@ def add_challenge(request):
         input_format = request.POST.get('input_format')
         output_format = request.POST.get('output_format')
         examples = request.POST.get('examples')
+        template_code = request.POST.get('template_code')  # New field
 
         # Create and save a new Challenge object
         new_challenge = Challenge(
@@ -101,7 +101,8 @@ def add_challenge(request):
             difficulty=difficulty,
             input_format=input_format,
             output_format=output_format,
-            examples=examples
+            examples=examples,
+            template_code=template_code  # Save the template_code
         )
         new_challenge.save()  # Save the challenge first to get an ID for the test cases
 
@@ -127,8 +128,6 @@ def add_challenge(request):
         return redirect('admin_dashboard')  # Redirect to the admin dashboard after adding
 
     return render(request, 'admin_add_challenge.html')
-
-
 
 
 def logout_view(request):
@@ -323,7 +322,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 # rohit code         756e517a77msh58ac762d967fff7p128ae3jsnc233287d404d
 #jayasurya           8ede8ff6dcmshcc206ea377c20c6p1db6bfjsnd3bcd1169d5e
-RAPIDAPI_KEY = "756e517a77msh58ac762d967fff7p128ae3jsnc233287d404d"
+RAPIDAPI_KEY = "8ede8ff6dcmshcc206ea377c20c6p1db6bfjsnd3bcd1169d5e"
 API_HOST = "judge0-ce.p.rapidapi.com"
 
 # In views.py
@@ -333,7 +332,8 @@ from .models import Challenge
 def code_editor(request, challenge_id):
     challenge = get_object_or_404(Challenge, id=challenge_id)
     context = {
-        "challenge": challenge
+        "challenge": challenge,
+        "template_code": challenge.template_code 
     }
     return render(request, "code_editor.html", context)
 
