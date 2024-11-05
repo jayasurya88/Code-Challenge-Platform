@@ -37,7 +37,6 @@
 
         async function submitCode() {
             const sourceCode = editor.getValue();
-            const userInput = document.getElementById("userInput").value;
             const language = document.getElementById("languageSelector").value;
 
             document.getElementById("testCaseResults").textContent = "Running code...";
@@ -51,7 +50,6 @@
                     },
                     body: new URLSearchParams({
                         "source_code": sourceCode,
-                        "user_input": userInput,
                         "language": language
                     })
                 });
@@ -112,11 +110,6 @@
         <div class="mb-3">
             <label for="sourceCode" class="form-label">Enter your code:</label>
             <textarea id="sourceCode" class="form-control" rows="10" placeholder="Enter your code here...">{{ template_code|safe }}</textarea>
-        </div>
-
-        <div class="mb-3">
-            <label for="userInput" class="form-label">Enter input:</label>
-            <textarea id="userInput" class="form-control" rows="3" placeholder="Enter your input here..."></textarea>
         </div>
 
         <button class="btn btn-primary" onclick="submitCode()">Run Code</button>

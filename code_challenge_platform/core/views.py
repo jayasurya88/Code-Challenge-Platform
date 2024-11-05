@@ -81,7 +81,7 @@ def admin_dashboard(request):
     return render(request,"admin_dashboard.html")
 
 
-# views.py
+
 from django.shortcuts import render, redirect
 from .models import Challenge, TestCase  # Make sure you have the TestCase model imported
 def add_challenge(request):
@@ -348,39 +348,7 @@ LANGUAGE_IDS = {
     "javascript": 63   # JavaScript
 }
 
-# def submit_code(request):
-#     if request.method == "POST":
-#         source_code = request.POST.get("source_code")
-#         user_input = request.POST.get("user_input", "")  # Get user input, default to empty string
-#         language = request.POST.get("language")  # Get selected language
-        
-#         if language not in LANGUAGE_IDS:
-#             return JsonResponse({"error": "Unsupported language"}, status=400)
-        
-#         if source_code:
-#             encoded_code = base64.b64encode(source_code.encode("utf-8")).decode("utf-8")
-#             encoded_input = base64.b64encode(user_input.encode("utf-8")).decode("utf-8")  # Encode user input
-#             payload = {
-#                 "language_id": LANGUAGE_IDS[language],  # Use the corresponding language ID
-#                 "source_code": encoded_code,
-#                 "stdin": encoded_input,  # Use encoded user input
-#                 "base64_encoded": "true"
-#             }
-#             headers = {
-#                 "x-rapidapi-key": RAPIDAPI_KEY,
-#                 "x-rapidapi-host": API_HOST,
-#                 "Content-Type": "application/json"
-#             }
-#             response = requests.post(f"https://{API_HOST}/submissions", json=payload, headers=headers)
-#             if response.status_code == 201:
-#                 token = response.json().get("token")
-#                 return JsonResponse({"token": token})
-#             else:
-#                 return JsonResponse({"error": "Failed to submit code", "details": response.json()}, status=400)
-#         else:
-#             return JsonResponse({"error": "No source code provided"}, status=400)
-    
-#     return JsonResponse({"error": "Invalid request method"}, status=405)
+
 
 import base64
 import requests
@@ -413,24 +381,24 @@ def submit_code(request, challenge_id):
                 "Content-Type": "application/json"
             }
 
-            # Make the API call to submit the code
+            
             response = requests.post(f"https://{API_HOST}/submissions", json=payload, headers=headers)
             print("Submission API response:", response.json())  # Log the response
 
             if response.status_code == 201:
                 token = response.json().get("token")
-                result = get_result(token)  # Helper function to get result
+                result = get_result(token)  
 
-                # Log the result object for debugging
-                print("Result object:", result)  # Log the result
+                
+                print("Result object:", result)  
 
                 # Decode the output
                 output, error_output, compile_output = decode_outputs(result)
 
-                # Expected output from the test case
+               
                 expected_output = test_case.expected_output.strip() if test_case.expected_output else ""
 
-                # Determine if the test case passed or failed
+                
                 if error_output:
                     status = "Runtime Error"
                 elif compile_output:
@@ -458,16 +426,16 @@ def get_result(token):
         "x-rapidapi-key": RAPIDAPI_KEY,
         "x-rapidapi-host": API_HOST
     }
-    params = {"base64_encoded": "true"}  # Ensure all outputs are Base64 encoded
+    params = {"base64_encoded": "true"}  
     response = requests.get(f"https://{API_HOST}/submissions/{token}", headers=headers, params=params)
 
-    # Log the response for debugging
-    print("Get result API response:", response.json())  # Log the full API response for analysis
+
+    print("Get result API response:", response.json())  
 
     return response.json()
 
 def decode_outputs(result):
-    # Decode stdout, stderr, and compile_output safely
+    
     try:
         output = base64.b64decode(result.get("stdout", "")).decode("utf-8") if result.get("stdout") else "No output"
         error_output = base64.b64decode(result.get("stderr", "")).decode("utf-8") if result.get("stderr") else None
@@ -484,7 +452,7 @@ def decode_outputs(result):
 
 
 def add_padding(b64_string):
-    # Only add padding if b64_string is non-empty and a multiple of 4 is required
+    
     if b64_string:
         missing_padding = len(b64_string) % 4
         if missing_padding:
