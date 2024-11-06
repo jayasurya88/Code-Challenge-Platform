@@ -45,12 +45,49 @@
                 <label for="examples" class="form-label">Examples:</label>
                 <textarea name="examples" class="form-control" required>{{ challenge.examples }}</textarea>
             </div>
-            
-            <button type="submit" class="btn btn-primary">Update Challenge</button>
+
+            <div class="mb-3">
+                <label for="template_code" class="form-label">Template Code:</label>
+                <textarea name="template_code" class="form-control" required>{{ challenge.template_code }}</textarea>
+            </div>
+
+            <h4>Edit Test Cases</h4>
+            <div id="test-cases-container">
+                {% for test_case in challenge.test_cases.all %}
+                    <div class="mb-3">
+                        <label for="input_test_case_{{ forloop.counter }}" class="form-label">Input Test Case {{ forloop.counter }}</label>
+                        <textarea class="form-control" name="input_test_case_{{ test_case.id }}" rows="2">{{ test_case.input_data }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="expected_output_test_case_{{ forloop.counter }}" class="form-label">Expected Output Test Case {{ forloop.counter }}</label>
+                        <textarea class="form-control" name="expected_output_test_case_{{ test_case.id }}" rows="2">{{ test_case.expected_output }}</textarea>
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="addTestCase()">Add Another Test Case</button>
+
+            <button type="submit" class="btn btn-primary mt-3">Update Challenge</button>
         </form>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-eMNp3Z9G1GAx0dL5U1kk4D2UZZkA4XOXdyGG0tl1a2gQItKD9Y7Lybv15I70ZlD" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+
+    <script>
+        let testCaseCount = {{ challenge.test_cases.count }};  // Initialize count based on existing test cases
+
+        function addTestCase() {
+            testCaseCount++;
+            const container = document.getElementById('test-cases-container');
+            const testCaseHtml = `
+                <div class="mb-3">
+                    <label for="input_test_case_${testCaseCount}" class="form-label">Input Test Case ${testCaseCount}</label>
+                    <textarea class="form-control" name="input_test_case_new_${testCaseCount}" rows="2"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="expected_output_test_case_${testCaseCount}" class="form-label">Expected Output Test Case ${testCaseCount}</label>
+                    <textarea class="form-control" name="expected_output_test_case_new_${testCaseCount}" rows="2"></textarea>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', testCaseHtml);
+        }
+    </script>
 </body>
 </html>

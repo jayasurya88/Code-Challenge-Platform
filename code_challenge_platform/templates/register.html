@@ -15,7 +15,7 @@
             <div class="col-md-6">
                 <h2 class="mb-4 text-center">Register</h2>
                 
-                <form method="POST">
+                <form method="POST" action="{% url 'register' %}">
                     {% csrf_token %}
                     
                     <div class="mb-3">

@@ -19,8 +19,11 @@ from django.utils.dateparse import parse_date
 
 def index (request):
     return render(request,'index.html')
+def home (request):
+    return render(request,'home.html')
 
-
+def register_view(request):
+    return render (request,"register.html")
 
 def register(request):
     if request.method == "POST":
@@ -52,12 +55,13 @@ def register(request):
             password=make_password(password)  
         )
         login(request, user)  
-        return redirect('home')  
+        return redirect('login_view')  
 
     return render(request, 'register.html')
 
-
 def login_view(request):
+    return render(request,"login.html")
+def login1(request):
     if request.method == "POST":
         username_or_email = request.POST.get('username_or_email')
         password = request.POST.get('password')
@@ -69,7 +73,7 @@ def login_view(request):
             if user.is_superuser:
                 return redirect('admin_dashboard')  
             else:
-                return redirect('index')  
+                return redirect('home')  
         else:
             messages.error(request, "Invalid username or password.")
             return render(request, 'login.html')
@@ -278,7 +282,7 @@ def take_challenge(request, id):
 @login_required
 def edit_challenge(request, challenge_id):
     challenge = get_object_or_404(Challenge, id=challenge_id)
-    
+
     if request.method == 'POST':
         challenge.title = request.POST.get('title')
         challenge.description = request.POST.get('description')
@@ -286,13 +290,31 @@ def edit_challenge(request, challenge_id):
         challenge.input_format = request.POST.get('input_format')
         challenge.output_format = request.POST.get('output_format')
         challenge.examples = request.POST.get('examples')
+        challenge.template_code = request.POST.get('template_code')
         challenge.save()
+
+        # Update existing test cases
+        for test_case in challenge.test_cases.all():
+            input_data = request.POST.get(f"input_test_case_{test_case.id}")
+            expected_output = request.POST.get(f"expected_output_test_case_{test_case.id}")
+            if input_data and expected_output:
+                test_case.input_data = input_data
+                test_case.expected_output = expected_output
+                test_case.save()
+
+        # Handle new test cases
+        new_test_case_id = 1
+        while request.POST.get(f"input_test_case_new_{new_test_case_id}"):
+            input_data = request.POST.get(f"input_test_case_new_{new_test_case_id}")
+            expected_output = request.POST.get(f"expected_output_test_case_new_{new_test_case_id}")
+            if input_data and expected_output:
+                TestCase.objects.create(challenge=challenge, input_data=input_data, expected_output=expected_output)
+            new_test_case_id += 1
+
         messages.success(request, "Challenge updated successfully!")
         return redirect('admin_dashboard')  # Redirect to admin dashboard
 
-    context = {
-        'challenge': challenge
-    }
+    context = {'challenge': challenge}
     return render(request, 'admin_edit_challenge.html', context)
 
 # Delete Challenge
