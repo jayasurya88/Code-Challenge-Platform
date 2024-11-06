@@ -336,15 +336,15 @@ def delete_challenge(request, challenge_id):
 def admin_challenge_list(request):
     challenges = Challenge.objects.all()  # Fetch all challenges from the database
     return render(request, 'admin_challenge_list.html', {'challenges': challenges})
-
+# rohit code         756e517a77msh58ac762d967fff7p128ae3jsnc233287d404d
+#jayasurya           8ede8ff6dcmshcc206ea377c20c6p1db6bfjsnd3bcd1169d5e
 # editor/views.py
 import requests
 import base64
 from django.shortcuts import render
 from django.http import JsonResponse
-# rohit code         756e517a77msh58ac762d967fff7p128ae3jsnc233287d404d
-#jayasurya           8ede8ff6dcmshcc206ea377c20c6p1db6bfjsnd3bcd1169d5e
-RAPIDAPI_KEY = "8ede8ff6dcmshcc206ea377c20c6p1db6bfjsnd3bcd1169d5e"
+
+RAPIDAPI_KEY = "756e517a77msh58ac762d967fff7p128ae3jsnc233287d404d"
 API_HOST = "judge0-ce.p.rapidapi.com"
 
 # In views.py
