@@ -1,0 +1,300 @@
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+1+Code:wght@100..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+* {
+  font-family: "M PLUS 1 Code", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  margin: 0;
+  border: none;
+  color: black;
+  user-select: none;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #efd9ce;
+  margin: 0;
+  overflow: hidden;
+}
+
+.container-fluid {
+  display: flex;
+  Width : 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.503);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  flex-direction: column;
+}
+
+.container-fluid h1 {
+  font-weight: 700;
+  font-size: 3rem;
+  position: relative;
+}
+
+.blinking-caret {
+  display: inline-block;
+  width: 0px;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.dot {
+  position: absolute;
+  z-index: -1;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  transition: transform 0.1s ease-out;
+  background-color: #6200ff;
+  filter: blur(100px);
+  -webkit-filter: blur(100px);
+  pointer-events: none;
+}
+
+
+.left,.right{
+  width : 50%;
+  height : 82%;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.learnMore{
+  font-weight: 500;
+  text-decoration: none;
+  margin-top: 1rem;
+  border: 2px solid rgba(196, 148, 255, 0.59);
+  border-radius: 7px;
+  padding: 0.3rem;
+  background-color: rgba(196, 148, 255, 0.59);
+  cursor: pointer;
+  -webkit-border-radius: 7px;
+  -moz-border-radius: 7px;
+  -ms-border-radius: 7px;
+  -o-border-radius: 7px;
+  user-select: auto;
+  transition: 0.3s ease-in-out;
+  -webkit-transition: 0.3s ease-in-out;
+  -moz-transition: 0.3s ease-in-out;
+  -ms-transition: 0.3s ease-in-out;
+  -o-transition: 0.3s ease-in-out;
+  color : black;
+}
+
+
+.learnMore:hover{
+  transform: scale(105%);
+  -webkit-transform: scale(105%);
+  -moz-transform: scale(105%);
+  -ms-transform: scale(105%);
+  -o-transform: scale(105%);
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  color : black !important;
+}
+
+
+.left p{
+  margin-top: 0.5em;
+  text-align: center;
+}
+
+.right img{
+  height : 100%;
+  width : 100%;
+}
+
+.content{
+  display: flex;
+  flex-direction: row;
+}
+
+.navbar{
+  width : 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+
+.navbar ul{
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 0.5rem; 
+}
+
+
+.navbar ul a{
+  text-decoration: none;
+  transition: 0.3s ease-in-out;
+  -webkit-transition: 0.3s ease-in-out;
+  -moz-transition: 0.3s ease-in-out;
+  -ms-transition: 0.3s ease-in-out;
+  -o-transition: 0.3s ease-in-out;
+  color : black;
+}
+
+
+.navbar ul a:hover{
+  transform: scale(122%);
+  -webkit-transform: scale(122%);
+  -moz-transform: scale(122%);
+  -ms-transform: scale(122%);
+  -o-transform: scale(122%);
+  font-weight: 700;
+}
+
+.logo a{
+  font-size: 1.3rem;
+  text-decoration: none;
+  color: black;
+  transition: 0.3s ease-in-out;
+  -webkit-transition: 0.3s ease-in-out;
+  -moz-transition: 0.3s ease-in-out;
+  -ms-transition: 0.3s ease-in-out;
+  -o-transition: 0.3s ease-in-out;
+}
+
+.logo a:hover{
+  transform: scale(115%);
+  -webkit-transform: scale(115%);
+  -moz-transform: scale(115%);
+  -ms-transform: scale(115%);
+  -o-transform: scale(115%);
+  color: purple;
+  font-weight: 900;
+}
+
+.logo{
+  display: flex;
+  align-items: center;
+  width : 70%;
+  padding-left: 1rem;
+  font-weight: 700;
+}
+
+.links{
+  width : 30%;
+}
+
+
+/*LEARN MORE BUTTON EFFECTS*/
+/* From Uiverse.io by abrahamcalsin */ 
+.practice {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #18315300;
+  font-family: "Montserrat", sans-serif;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 10px !important;
+  border: 2px solid black;
+  -webkit-border-radius: 10px !important;
+  -moz-border-radius: 10px !important;
+  -ms-border-radius: 10px !important;
+  -o-border-radius: 10px !important;
+}
+
+.practice:after {
+  content: " ";
+  width: 0%;
+  height: 100%;
+  background: #cc7fff;
+  color : white;
+  position: absolute;
+  transition: all 0.4s ease-in-out;
+  right: 0;
+}
+
+.practice:hover::after {
+  right: auto;
+  left: 0;
+  width: 100%;
+}
+
+.practice a {
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+  width: 100%;
+  padding: 5px;
+  color: black;
+  font-size: 1.125em;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  z-index: 20;
+  transition: all 0.3s ease-in-out;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+
+.practice:hover a {
+  color: white;
+  animation: scaleUp 0.3s ease-in-out;
+}
+
+@keyframes scaleUp {
+  0% {
+    transform: scale(1);
+    -webkit-transform:;
+    -moz-transform:;
+    -ms-transform:;
+    -o-transform:;
+}
+
+  50% {
+    transform: scale(0.95);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+/* styles.css */
+
+@keyframes fadeIn {
+  from {
+      transform: translateX(-100px);
+      -webkit-transform: translateX(-100px);
+      -moz-transform: translateX(-100px);
+      -ms-transform: translateX(-100px);
+      -o-transform: translateX(-100px);
+      -webkit-transform: translateX(-100px);
+      opacity: 0;
+}
+  to {
+      transform: translateX(0);
+      -webkit-transform: translateX(0);
+      -moz-transform: translateX(0);
+      -ms-transform: translateX(0);
+      -o-transform: translateX(0);
+      opacity: 1;
+}
+}
+
+body {
+  animation: fadeIn 0.5s ease-in-out;
+  -webkit-animation: fadeIn 0.5s ease-in-out;
+}

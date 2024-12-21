@@ -195,7 +195,7 @@ def reset_password(request):
             user.set_password(new_password)
             user.save()
             messages.success(request, 'Password reset successfully!')
-            return redirect('login')  
+            return redirect('login1')  
         else:
             messages.error(request, 'Email address not found in session.')
 
