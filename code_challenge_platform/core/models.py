@@ -3,20 +3,26 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.contrib.auth.models import User
 class CustomUser(AbstractUser):
-     GENDER_CHOICES = (
+    GENDER_CHOICES = (
         ('M', 'Male'),
         ('F', 'Female'),
         ('O', 'Other'),
     )
 
-     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
-     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True, blank=True)
-     location = models.CharField(max_length=100, null=True, blank=True)
-     birthday = models.DateField(blank=True, null=True)  
-     skills = models.TextField(null=True, blank=True)  # Can store as a comma-separated list of skills
+    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True, blank=True)
+    location = models.CharField(max_length=100, null=True, blank=True)
+    birthday = models.DateField(blank=True, null=True)
+    skills = models.TextField(null=True, blank=True)  # Can store as a comma-separated list of skills
+    points = models.IntegerField(default=0)  # Tracks total points
 
-     def __str__(self):
-        return self.username  
+    def add_points(self, points):
+        """Adds points to the user."""
+        self.points += points
+        self.save()
+
+    def __str__(self):
+        return self.username
         
 
 # models.py
