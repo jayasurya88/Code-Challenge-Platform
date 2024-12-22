@@ -55,7 +55,7 @@ def register(request):
             password=make_password(password)  
         )
         login(request, user)  
-        return redirect('login_view')  
+        return redirect('login1')  
 
     return render(request, 'register.html')
 
@@ -522,3 +522,14 @@ def add_padding(b64_string):
             b64_string += '=' * (4 - missing_padding)
     return b64_string
 
+
+
+
+from django.shortcuts import render
+from .models import CustomUser
+
+def leaderboard(request):
+    # Filter out admin users and users with less than 5 points
+    users = CustomUser.objects.filter(is_superuser=False, points__gte=5).order_by('-points')
+    
+    return render(request, 'leaderboard.html', {'users': users})

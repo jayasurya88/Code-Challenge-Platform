@@ -7,6 +7,7 @@ urlpatterns = [
     path('register_view/', views.register_view, name='register_view'),
     path('register/', views.register, name='register'),
     path('login/', views.login1, name='login1'),
+    path('login_view/', views.login_view, name='login_view'),
     path('admin_dashboard/,',views.admin_dashboard, name='admin_dashboard') ,
     path('logout_view/', views.logout_view, name='logout_view'),
     path('password_reset/', views.password_recovery, name='password_reset'),
@@ -28,6 +29,7 @@ urlpatterns = [
     path('challenge/<int:challenge_id>/submit/', views.submit_code, name='submit_code'),
     path("result/<str:token>/", views.get_result, name="get_result"),
     path('challenge/<int:challenge_id>/code_editor/', views.code_editor, name='code_editor'),
+    path('leaderboard/', views.leaderboard, name='leaderboard'),
     # Other URL patterns...
 
     
