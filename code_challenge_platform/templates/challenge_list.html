@@ -9,7 +9,9 @@
 <body>
     <div class="container">
         <h1 class="mt-5">Challenge List</h1>
+        {% if user.is_superuser %}
         <a href="{% url 'add_challenge' %}" class="btn btn-success mb-3">Add New Challenge</a>
+    {% endif %}
         <table class="table table-striped">
             <thead>
                 <tr>

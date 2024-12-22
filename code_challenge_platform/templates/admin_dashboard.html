@@ -5,16 +5,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            background-color: #343a40;
+            position: fixed;
+            top: 0;
+            left: 0;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            text-decoration: none;
+            color: #adb5bd;
+            padding: 10px 20px;
+            display: block;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+            color: #fff;
+        }
+        .topbar {
+            height: 60px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee2e6;
+            margin-left: 250px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        .sidebar .brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            padding: 10px 20px;
+            border-bottom: 1px solid #495057;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-4">
-        <h1>Admin Dashboard</h1>
-        <a href="{% url 'add_challenge' %}" class="btn btn-primary mb-2">Add Challenge</a>
-        <a href="{% url 'admin_challenge_list' %}" class="btn btn-secondary mb-2">View Challenge List</a>
-        <!-- Add more admin features as needed -->
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="brand">Admin Dashboard</div>
+        <a href="{% url 'add_challenge' %}">Add Challenge</a>
+        <a href="{% url 'admin_challenge_list' %}">View Challenges</a>
+        <a href="">User Management</a>
+        <a href="">Reports</a>
+        <a href="">Settings</a>
+        <a href="{% url 'logout_view' %}">Logout</a>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+    <!-- Topbar -->
+    <div class="topbar">
+        <div>Welcome, Admin</div>
+        <button class="btn btn-outline-primary">Notifications</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <h2>Dashboard Overview</h2>
+        <p>Welcome to the admin dashboard. Use the links on the sidebar to navigate through the features.</p>
+        <!-- Add additional dashboard content as needed -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-header">Challenges</div>
+                    <div class="card-body">
+                        <h5 class="card-title">25 Challenges</h5>
+                        <p class="card-text">Manage and update the challenges available on the platform.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-header">Users</div>
+                    <div class="card-body">
+                        <h5 class="card-title">1,024 Users</h5>
+                        <p class="card-text">Manage user accounts and permissions.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-warning mb-3">
+                    <div class="card-header">Reports</div>
+                    <div class="card-body">
+                        <h5 class="card-title">12 Reports</h5>
+                        <p class="card-text">View and analyze platform reports.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
 </body>
