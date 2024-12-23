@@ -17,22 +17,31 @@ Challenge List - DEVBIT
                 <th>Title</th>
                 <th>Difficulty</th>
                 <th>Description</th>
+                <th>Status</th> <!-- Add a Status column -->
             </tr>
         </thead>
         <tbody>
             {% for challenge in challenges %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td><a href="{% url 'challenge_detail' challenge.id %}">{{ challenge.title }}</a></td> <!-- Link to view challenge details -->
+                <td><a href="{% url 'challenge_detail' challenge.id %}">{{ challenge.title }}</a></td>
                 <td>{{ challenge.difficulty }}</td>
-                <td>{{ challenge.description|truncatewords:10 }}</td> <!-- Show a truncated description -->
+                <td>{{ challenge.description|truncatewords:10 }}</td>
+                <td>
+                    {% if challenge.id in completed_challenges %}
+                    <span class="text-success">&#10004;</span> <!-- Tick mark -->
+                    {% else %}
+                    <span class="text-danger">Incomplete</span>
+                    {% endif %}
+                </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="4">No challenges available.</td>
+                <td colspan="5">No challenges available.</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+
 {% endblock %}

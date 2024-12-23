@@ -11,7 +11,7 @@ urlpatterns = [
     path('admin_dashboard/,',views.admin_dashboard, name='admin_dashboard') ,
     path('logout_view/', views.logout_view, name='logout_view'),
     path('password_reset/', views.password_recovery, name='password_reset'),
-    
+    path('about/', views.about, name='about'),
     path('reset_password/', views.reset_password, name='reset_password'),
     path('otp_verification/', views.otp_verification, name='otp_verification'),
     path('profile_view/', views.profile_view, name='profile_view'),

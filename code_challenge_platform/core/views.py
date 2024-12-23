@@ -21,6 +21,8 @@ def index (request):
     return render(request,'index.html')
 def home (request):
     return render(request,'home.html')
+def about (request):
+    return render(request,'about.html')
 
 def register_view(request):
     return render (request,"register.html")
@@ -246,12 +248,32 @@ def profile_edit(request):
     return render(request, 'profile_edit.html', context)
 
 
+from datetime import timedelta, date
+from django.db.models import Sum
+
+# views.py
+from django.shortcuts import render
+from django.db.models import Count
+from datetime import datetime, timedelta
+
 def profile_view(request):
     user = request.user
-    return render(request, 'profile_view.html', {'user': user})
+    start_date = datetime.now() - timedelta(days=365)  # last 365 days
+    
+    # Query the completed challenges for the user in the last 365 days
+    user_challenges = UserChallenge.objects.filter(
+        user=user,
+        completed_at__gte=start_date
+    ).values('completed_at__date').annotate(count=Count('id')).order_by('completed_at__date')
 
-
-
+    # Prepare the data for the frontend
+    contributions_per_day = {str(contrib['completed_at__date']): contrib['count'] for contrib in user_challenges}
+    
+    # Pass data to the template
+    context = {
+        'contributions_per_day': contributions_per_day
+    }
+    return render(request, 'profile_view.html', context)
 
 # views.py
 from django.shortcuts import render, get_object_or_404
@@ -259,8 +281,13 @@ from django.shortcuts import render
 from .models import Challenge
 
 def challenge_list(request):
-    challenges = Challenge.objects.all()  # Fetch all Challenge objects
-    return render(request, 'challenge_list.html', {'challenges': challenges})
+    challenges = Challenge.objects.all()
+    completed_challenges = UserChallenge.objects.filter(user=request.user).values_list('challenge_id', flat=True)
+
+    return render(request, 'challenge_list.html', {
+        'challenges': challenges,
+        'completed_challenges': completed_challenges,
+    })
 
 
 def challenge_detail(request, id):
@@ -396,6 +423,8 @@ LANGUAGE_IDS = {
 
 
 
+from .models import UserChallenge  # Ensure this model is imported
+
 def submit_code(request, challenge_id):
     if request.method == "POST":
         user = request.user  # Get the currently logged-in user
@@ -461,6 +490,11 @@ def submit_code(request, challenge_id):
                 results.append({"error": "Code submission failed."})
                 all_passed = False
 
+        # Check if the challenge has already been completed by the user
+        if UserChallenge.objects.filter(user=user, challenge=challenge).exists():
+            # Skip points addition for already completed challenge, just return the results
+            return JsonResponse({"results": results, "points_awarded": 0})
+
         # Award points if all test cases are passed
         if all_passed:
             # Define point system based on challenge difficulty
@@ -474,6 +508,10 @@ def submit_code(request, challenge_id):
             # Add points to the user
             if hasattr(user, "add_points"):
                 user.add_points(points)
+
+                # Add the completed challenge to UserChallenge
+                UserChallenge.objects.create(user=user, challenge=challenge)
+
                 return JsonResponse({"results": results, "points_awarded": points})
             else:
                 return JsonResponse({"results": results, "error": "User model does not support points."}, status=400)
@@ -481,6 +519,7 @@ def submit_code(request, challenge_id):
         return JsonResponse({"results": results, "points_awarded": 0})
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
+
 
 def get_result(token):
     key = get_rapidapi_key()

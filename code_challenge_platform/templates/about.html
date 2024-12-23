@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}
+About Us - DevBit
+{% endblock %}
+
+{% block content %}
+<div class="about-container">
+    <section class="hero-section text-center">
+        <h1>About DevBit</h1>
+        <p>Your go-to platform for mastering coding challenges and honing your problem-solving skills.</p>
+    </section>
+
+    <section class="intro-section">
+        <h2>What is DevBit?</h2>
+        <p>DevBit is an online platform designed to help developers, students, and coding enthusiasts enhance their programming skills. 
+           With carefully curated coding challenges, real-time feedback, and community interaction, DevBit makes learning to code fun, 
+           interactive, and rewarding.</p>
+    </section>
+
+    <section class="features-section">
+        <h2>Features</h2>
+        <ul>
+            <li><strong>Wide Range of Challenges:</strong> Solve challenges across multiple domains like algorithms, data structures, and web development.</li>
+            <li><strong>Real-Time Feedback:</strong> Get instant feedback on your code submissions.</li>
+            <li><strong>Contribution Graph:</strong> Track your daily activity and progress over time.</li>
+            <li><strong>Leaderboard:</strong> Compete with peers and see where you stand.</li>
+            <li><strong>Custom Code Editor:</strong> Write and test your code directly on the platform.</li>
+        </ul>
+    </section>
+
+    <section class="audience-section">
+        <h2>Who Is DevBit For?</h2>
+        <p>Whether you're a beginner taking your first steps in programming, a developer preparing for job interviews, or a competitive programmer aiming for the top, DevBit has something for everyone.</p>
+    </section>
+
+    <section class="how-it-works-section">
+        <h2>How It Works</h2>
+        <ol>
+            <li><strong>Sign Up:</strong> Create an account to access the platform.</li>
+            <li><strong>Choose a Challenge:</strong> Pick a coding challenge based on your skill level.</li>
+            <li><strong>Write Code:</strong> Use our built-in editor to solve the problem.</li>
+            <li><strong>Submit:</strong> Submit your solution and receive instant feedback.</li>
+            <li><strong>Track Progress:</strong> Monitor your achievements and activity using the contribution graph.</li>
+        </ol>
+    </section>
+
+    <section class="vision-section">
+        <h2>Our Vision and Mission</h2>
+        <p>At DevBit, we aim to empower individuals to become better programmers by fostering a culture of learning, collaboration, and innovation. 
+           We believe that coding is not just a skill but a pathway to endless opportunities.</p>
+    </section>
+
+    <section class="testimonials-section">
+        <h2>What Our Users Say</h2>
+        <blockquote>
+            <p>"DevBit has transformed the way I approach problem-solving. The challenges are engaging and the feedback is invaluable!"</p>
+            <footer>- Alex, Software Engineer</footer>
+        </blockquote>
+        <blockquote>
+            <p>"As a beginner, I found the platform incredibly easy to use. It helped me build confidence in my coding skills."</p>
+            <footer>- Sarah, Student</footer>
+        </blockquote>
+    </section>
+
+    <section class="contact-section">
+        <h2>Get in Touch</h2>
+        <p>Have questions or need support? Reach out to us at:</p>
+        <ul>
+            <li>Email: <a href="mailto:support@devbit.com">support@devbit.com</a></li>
+            <li>Twitter: <a href="https://twitter.com/devbit">@devbit</a></li>
+            <li>LinkedIn: <a href="https://linkedin.com/company/devbit">DevBit on LinkedIn</a></li>
+        </ul>
+    </section>
+</div>
+
+<style>
+    body {
+  background-color: #efd9ce;
+  margin: 0;
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Keep horizontal scrolling disabled */
+  animation: fadeIn 0.5s ease-in-out;
+  -webkit-animation: fadeIn 0.5s ease-in-out;
+}
+
+    .about-container {
+        margin: 20px auto;
+        padding: 20px;
+        max-width: 800px;
+        line-height: 1.6;
+        font-family: Arial, sans-serif;
+    }
+    .hero-section {
+        margin-bottom: 30px;
+    }
+    .hero-section h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+    }
+    .features-section ul, .how-it-works-section ol {
+        padding-left: 20px;
+    }
+    .contact-section ul {
+        list-style: none;
+        padding: 0;
+    }
+    .contact-section ul li {
+        margin: 5px 0;
+    }
+    blockquote {
+        background: #f9f9f9;
+        border-left: 10px solid #ccc;
+        margin: 1.5em 10px;
+        padding: 0.5em 10px;
+    }
+    blockquote p {
+        font-size: 1.2em;
+        margin: 0;
+    }
+    blockquote footer {
+        text-align: right;
+        font-size: 0.9em;
+        color: #555;
+    }
+</style>
+{% endblock %}
