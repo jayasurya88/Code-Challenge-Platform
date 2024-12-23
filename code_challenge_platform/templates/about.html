@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
 About Us - DevBit
@@ -61,6 +62,24 @@ About Us - DevBit
             <p>"As a beginner, I found the platform incredibly easy to use. It helped me build confidence in my coding skills."</p>
             <footer>- Sarah, Student</footer>
         </blockquote>
+        <blockquote>
+            <p>"I've been using DevBit for a few months now, and it's been a great way to improve my coding skills. The platform is smooth and intuitive."</p>
+            <footer>- John, Developer</footer>
+        </blockquote>
+    </section>
+
+    <section class="developers-section">
+        <h2>Meet the Developers</h2>
+        <div class="developer-profile">
+            <img src="{% static 'images/pfp.jpg' %}" alt="Rohit" class="developer-image">
+            <h3>Rohit (Front-End Developer)</h3>
+            <p>Rohit was responsible for designing and implementing the front-end of the platform. His focus on creating a user-friendly and visually appealing experience has been key to the platform's success.</p>
+        </div>
+        <div class="developer-profile">
+            <img src="{% static 'images/js_profile.jpg' %}" alt="You" class="developer-image">
+            <h3>Jayasurya Sudhakaran (Back-End Developer)</h3>
+            <p>As the back-end developer, I handled the server-side logic, database interactions, and integrated the functionality that powers the platform. My goal was to ensure smooth and efficient operations for all users.</p>
+        </div>
     </section>
 
     <section class="contact-section">
@@ -75,53 +94,113 @@ About Us - DevBit
 </div>
 
 <style>
-    body {
-  background-color: #efd9ce;
-  margin: 0;
-  overflow-y: auto; /* Enable vertical scrolling */
-  overflow-x: hidden; /* Keep horizontal scrolling disabled */
-  animation: fadeIn 0.5s ease-in-out;
-  -webkit-animation: fadeIn 0.5s ease-in-out;
-}
+    html, body {
+        height: 100%;
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
     .about-container {
-        margin: 20px auto;
-        padding: 20px;
-        max-width: 800px;
-        line-height: 1.6;
-        font-family: Arial, sans-serif;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 30px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        max-height: 100vh;
+        overflow-y: auto;
     }
+
     .hero-section {
+        background: linear-gradient(145deg, #4caf50, #8bc34a);
+        color: #fff;
+        padding: 50px 20px;
+        border-radius: 8px;
         margin-bottom: 30px;
     }
+
     .hero-section h1 {
-        font-size: 2.5em;
-        margin-bottom: 10px;
+        font-size: 3em;
+        margin-bottom: 20px;
     }
+
+    .hero-section p {
+        font-size: 1.2em;
+        line-height: 1.6;
+    }
+
     .features-section ul, .how-it-works-section ol {
         padding-left: 20px;
+        margin-top: 10px;
     }
-    .contact-section ul {
-        list-style: none;
-        padding: 0;
+
+    .features-section li, .how-it-works-section li {
+        margin-bottom: 15px;
+        font-size: 1.1em;
     }
-    .contact-section ul li {
-        margin: 5px 0;
+
+    .audience-section, .vision-section {
+        margin-top: 30px;
     }
+
+    .testimonials-section {
+        margin-top: 40px;
+    }
+
     blockquote {
         background: #f9f9f9;
-        border-left: 10px solid #ccc;
-        margin: 1.5em 10px;
-        padding: 0.5em 10px;
+        border-left: 5px solid #4caf50;
+        padding: 15px;
+        margin: 20px 0;
+        font-style: italic;
+        font-size: 1.1em;
     }
-    blockquote p {
-        font-size: 1.2em;
-        margin: 0;
+
+    .developer-profile {
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+        background-color: #f7f7f7;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
-    blockquote footer {
-        text-align: right;
-        font-size: 0.9em;
-        color: #555;
+
+    .developer-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin-right: 20px;
+    }
+
+    .developers-section {
+        background-color: #fafafa;
+        padding: 30px;
+        border-radius: 8px;
+        margin-bottom: 40px;
+    }
+
+    .contact-section {
+        margin-top: 40px;
+    }
+
+    .contact-section ul {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .contact-section ul li {
+        margin: 10px 0;
+    }
+
+    .contact-section a {
+        color: #4caf50;
+        text-decoration: none;
+    }
+
+    .contact-section a:hover {
+        text-decoration: underline;
     }
 </style>
+
 {% endblock %}
