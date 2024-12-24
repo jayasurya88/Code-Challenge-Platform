@@ -1,54 +1,51 @@
-<!-- templates/registration/register.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-    
-    <!-- Bootstrap 5.0.2 CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static%}
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'register_styles.css' %}" />
+{% endblock %}
+{% block content %}
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <h2 class="mb-4 text-center">Register</h2>
-                
                 <form method="POST" action="{% url 'register' %}">
                     {% csrf_token %}
-                    
-                    <div class="mb-3">
-                        <label for="first_name" class="form-label">First Name:</label>
-                        <input type="text" class="form-control" id="first_name" name="first_name" required>
-                    </div>
+                    <div class="register-box">
+                        <p>REGISTER</p>
+                        <form>
+                            <div class="user-box">
+                                <input id="first_name" name="first_name" required type="text" />
+                                <label>First Name</label>
+                            </div>
 
-                    <div class="mb-3">
-                        <label for="last_name" class="form-label">Last Name:</label>
-                        <input type="text" class="form-control" id="last_name" name="last_name" required>
-                    </div>
+                            <div class="user-box">
+                                <input id="last_name" name="last_name" required type="text" />
+                                <label>Last Name</label>
+                            </div>
 
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username:</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
-                    </div>
+                            <div class="user-box">
+                                <input id="username" name="username" required type="text" />
+                                <label>Username</label>
+                            </div>
 
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email:</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
-                    </div>
+                            <div class="user-box">
+                                <input id="email" name="email" required type="email" />
+                                <label>Email</label>
+                            </div>
 
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password:</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
+                            <div class="user-box">
+                                <input id="password" name="password" required type="password" />
+                                <label>Password</label>
+                            </div>
 
-                    <div class="mb-3">
-                        <label for="confirm_password" class="form-label">Confirm Password:</label>
-                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-                    </div>
+                            <div class="user-box">
+                                <input id="confirm_password" name="confirm_password" required type="password" />
+                                <label>Confirm Password</label>
+                            </div>
 
-                    <button type="submit" class="btn btn-primary w-100">Register</button>
+                            <button type="submit" class="loginBtn">REGISTER</button>
+                          
+                        </form>
+                      </div>
                 </form>
 
                 {% if messages %}
@@ -69,5 +66,4 @@
     <!-- Bootstrap 5.0.2 JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXlIRA23mELBgN9ErIglR5I2IWvT6rQt2zJIWv/j7K+xHA1RWtV/Ky1zWj8I" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhG81r603YFm2nKvn2LgVR39Wbl5/BEqHrR1W1yEzDxm0Rn5+8nbTov4+1p" crossorigin="anonymous"></script>
-</body>
-</html>
+    {% endblock %}

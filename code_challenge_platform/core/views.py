@@ -55,7 +55,7 @@ def register(request):
             password=make_password(password)  
         )
         login(request, user)  
-        return redirect('login_view')  
+        return redirect('login1')  
 
     return render(request, 'register.html')
 
