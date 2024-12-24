@@ -1,21 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ challenge.title }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+{% extends 'base.html' %}
+{% load static%}
+{% block title %} Challenge List - DEVBIT {% endblock %}
+
+
+{% block content %}
     <style>
         .scrollable {
             max-height: 300px; /* Adjust height as needed */
             overflow-y: auto; /* Enables vertical scrolling */
         }
+        
+        .mt-5, .difficulty strong{
+            text-align: center;
+        }
+
+        .mt-4{
+            /* border : 2px solid red; */
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            margin-bottom: 1rem;
+        }
+        .btn{
+            width : 40%;
+            border : 1px solid black;
+            color : black;
+            transition: 0.3s ease-in-out;
+            background: transparent;
+        }
+
+        .btn-primary:hover{
+            background-color : rgb(255, 127, 127);
+            transform: scale(105%);
+            border-radius: 10px;
+        }
+
+        .btn-success:hover{
+            background-color : rgb(114, 255, 114);
+            color : black;
+            transform: scale(105%);
+            border-radius: 10px;
+        }
     </style>
-</head>
-<body>
     <div class="container">
         <h1 class="mt-5">{{ challenge.title }}</h1>
-        <p><strong>Difficulty:</strong> {{ challenge.difficulty }}</p>
+        <p class="difficulty"><strong>Difficulty:</strong> {{ challenge.difficulty }}</p>
         <p><strong>Description:</strong></p>
         <div class="scrollable border p-2 mb-4">{{ challenge.description }}</div>
 
@@ -41,9 +70,8 @@
 
 
         <div class="mt-4">
-            <a href="{% url 'challenge_list' %}" class="btn btn-primary">Back to Challenge List</a>
-            <a href="{% url 'code_editor' challenge.id %}" class="btn btn-success">do challenge</a>
+            <a href="{% url 'challenge_list' %}" class="btn btn-primary">BACK TO CHALLENGES</a>
+            <a href="{% url 'code_editor' challenge.id %}" class="btn btn-success">ACCEPT CHALLENGE</a>
         </div>
     </div>
-</body>
-</html>
+{% endblock %}

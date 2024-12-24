@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Dec 19, 2024 at 04:40 PM
+-- Generation Time: Dec 24, 2024 at 06:04 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.0.26
 
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `auth_permission` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`),
   KEY `auth_permission_content_type_id_2f476e4b` (`content_type_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `auth_permission`
@@ -105,7 +105,11 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (29, 'Can add test case', 8, 'add_testcase'),
 (30, 'Can change test case', 8, 'change_testcase'),
 (31, 'Can delete test case', 8, 'delete_testcase'),
-(32, 'Can view test case', 8, 'view_testcase');
+(32, 'Can view test case', 8, 'view_testcase'),
+(33, 'Can add user challenge', 9, 'add_userchallenge'),
+(34, 'Can change user challenge', 9, 'change_userchallenge'),
+(35, 'Can delete user challenge', 9, 'delete_userchallenge'),
+(36, 'Can view user challenge', 9, 'view_userchallenge');
 
 -- --------------------------------------------------------
 
@@ -124,13 +128,15 @@ CREATE TABLE IF NOT EXISTS `core_challenge` (
   `examples` longtext NOT NULL,
   `template_code` longtext NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `core_challenge`
 --
 
 INSERT INTO `core_challenge` (`id`, `title`, `description`, `difficulty`, `input_format`, `output_format`, `examples`, `template_code`) VALUES
+(15, 'FizzBuzz', 'Write a program that prints the numbers from 1 to n. But for multiples of 3, print \"Fizz\" instead of the number, and for the multiples of 5, print \"Buzz\". For numbers which are multiples of both three and five, print \"FizzBuzz\".', 'Easy', 'An integer n (1 ≤ n ≤ 10^3) representing the range of numbers to print.', 'A list of strings where each string is either a number, \"Fizz\", \"Buzz\", or \"FizzBuzz\" based on the rules.', 'n = 15(INPUT)\r\n[\"1\", \"2\", \"Fizz\", \"4\", \"Buzz\", \"Fizz\", \"7\", \"8\", \"Fizz\", \"Buzz\", \"11\", \"Fizz\", \"13\", \"14\", \"FizzBuzz\"](OUTPUT)Explanation:\r\n\r\nNumbers 3, 6, 9, 12 are divisible by 3, so \"Fizz\" is printed.\r\nNumbers 5, 10 are divisible by 5, so \"Buzz\" is printed.\r\nNumbers 15 is divisible by both 3 and 5, so \"FizzBuzz\" is printed.', 'def fizz_buzz(n):\r\n    result = []\r\n    \r\n        # Your logic here...\r\n        \r\n    return result\r\n\r\n# Main function to take user input and output result\r\ndef main():\r\n    # Get input from the user\r\n    n = int(input(\"Enter the value of n: \"))\r\n    \r\n    # Call fizz_buzz function and print the result\r\n    result = fizz_buzz(n)\r\n    \r\n    # Display the result\r\n    print(\"Output:\")\r\n    print(result)\r\n\r\nif __name__ == \"__main__\":\r\n    main()\r\n\r\n    # Display the result\r\n    print(\"Output:\")\r\n    print(result)\r\n\r\nif __name__ == \"__main__\":\r\n    main()\r\n'),
+(14, 'Remove Duplicates from a List', 'Write a function that takes a list of integers as input and returns a new list with all duplicate values removed. The returned list should maintain the order of the first occurrence of each element.', 'Medium', 'Input Format:\r\nA single line containing space-separated integers.', 'A single line containing the integers from the input list with duplicates removed, separated by a space.', '1 2 3 2 4 3 5 -> 1 2 3 4 5\r\n ', 'def remove_duplicates(numbers):\r\n    # Write your code here\r\n    pass\r\n\r\n# Example usage\r\nif __name__ == \"__main__\":\r\n    numbers = list(map(int, input().split()))\r\n    result = remove_duplicates(numbers)\r\n    print(\" \".join(map(str, result)))\r\n'),
 (13, 'Reverse a String', 'Write a function that takes a string as input and returns the string reversed.', 'Easy', ' A single string s (1 ≤ |s| ≤ 1000), which contains only alphabetic characters.', 'The reversed string.', 'Examples:\r\n\r\nInput: \"hello\"\r\n\r\nOutput: \"olleh\"\r\n\r\nInput: \"world\"\r\n\r\nOutput: \"dlrow\"', 'def reverse_string(s):\r\n    # Write Your Code here\r\n    \r\n\r\n\r\nuser_input = input(\"\")\r\nreversed_string = reverse_string(user_input)\r\nprint(reversed_string)\r\n   \r\n');
 
 -- --------------------------------------------------------
@@ -157,17 +163,19 @@ CREATE TABLE IF NOT EXISTS `core_customuser` (
   `location` varchar(100) DEFAULT NULL,
   `profile_picture` varchar(100) DEFAULT NULL,
   `skills` longtext,
+  `points` int NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `core_customuser`
 --
 
-INSERT INTO `core_customuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`, `birthday`, `gender`, `location`, `profile_picture`, `skills`) VALUES
-(3, 'pbkdf2_sha256$870000$swS5iHi5xd16j9GmPelarI$oHV4wsi+okK4dH82eeTIXPPxjUq8GjUMw7z4pPo8gko=', '2024-11-06 17:59:20.595401', 1, 'admin', '', '', 'admin@gmail.com', 1, 1, '2024-10-23 10:08:28.226809', NULL, NULL, NULL, NULL, NULL),
-(6, 'pbkdf2_sha256$870000$qrQDYBZJmYehDBmh4dByXQ$iqOY01aQTzP/wgcwn77HrWwpjQk/6NxOySV9PrC18GY=', '2024-11-06 17:44:03.156899', 0, 'jayasurya', 'Jayasurya', 'Sudhakaran', 'jayasurya@gmail.com', 0, 1, '2024-11-06 17:08:54.260272', NULL, NULL, NULL, '', NULL);
+INSERT INTO `core_customuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`, `birthday`, `gender`, `location`, `profile_picture`, `skills`, `points`) VALUES
+(3, 'pbkdf2_sha256$870000$swS5iHi5xd16j9GmPelarI$oHV4wsi+okK4dH82eeTIXPPxjUq8GjUMw7z4pPo8gko=', '2024-12-22 18:09:23.438515', 1, 'admin', '', '', 'admin@gmail.com', 1, 1, '2024-10-23 10:08:28.226809', NULL, NULL, NULL, NULL, NULL, 0),
+(6, 'pbkdf2_sha256$870000$qrQDYBZJmYehDBmh4dByXQ$iqOY01aQTzP/wgcwn77HrWwpjQk/6NxOySV9PrC18GY=', '2024-12-24 04:49:29.169750', 0, 'jayasurya', 'Jayasurya', 'Sudhakaran', 'jayasurya@gmail.com', 0, 1, '2024-11-06 17:08:54.260272', '2003-06-13', 'M', 'Kerala', 'profile_pictures/24PMC123cIC4zbarmb176zCx_1.jpg', 'None', 50),
+(7, 'pbkdf2_sha256$870000$MrUysxx5kPPifMUGjwdWOn$sKFl97NZjXhCL4BO7v85y13aWgeJMQYVBcGtP5d1CxM=', '2024-12-22 18:19:55.282539', 0, 'archana', 'Archana', 'K Shaiju', 'archana@gmail.com', 0, 1, '2024-12-22 18:18:02.193206', NULL, NULL, NULL, '', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -217,15 +225,41 @@ CREATE TABLE IF NOT EXISTS `core_testcase` (
   `challenge_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
   KEY `core_testcase_challenge_id_44a20f25` (`challenge_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `core_testcase`
 --
 
 INSERT INTO `core_testcase` (`id`, `input_data`, `expected_output`, `challenge_id`) VALUES
+(21, '15', '[\"1\", \"2\", \"Fizz\", \"4\", \"Buzz\", \"Fizz\", \"7\", \"8\", \"Fizz\", \"Buzz\", \"11\", \"Fizz\", \"13\", \"14\", \"FizzBuzz\"]\r\n', 15),
+(20, '10 20 10 30 40 30 50\r\n', '10 20 30 40 50\r\n', 14),
 (19, 'world', 'dlrow', 13),
 (18, 'hello', 'olleh', 13);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `core_userchallenge`
+--
+
+DROP TABLE IF EXISTS `core_userchallenge`;
+CREATE TABLE IF NOT EXISTS `core_userchallenge` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `completed_at` datetime(6) NOT NULL,
+  `challenge_id` bigint NOT NULL,
+  `user_id` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `core_userchallenge_challenge_id_6371a491` (`challenge_id`),
+  KEY `core_userchallenge_user_id_43e0ce4d` (`user_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `core_userchallenge`
+--
+
+INSERT INTO `core_userchallenge` (`id`, `completed_at`, `challenge_id`, `user_id`) VALUES
+(1, '2024-12-23 17:03:02.318349', 13, 6);
 
 -- --------------------------------------------------------
 
@@ -261,7 +295,7 @@ CREATE TABLE IF NOT EXISTS `django_content_type` (
   `model` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `django_content_type`
@@ -275,7 +309,8 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (5, 'sessions', 'session'),
 (6, 'core', 'customuser'),
 (7, 'core', 'challenge'),
-(8, 'core', 'testcase');
+(8, 'core', 'testcase'),
+(9, 'core', 'userchallenge');
 
 -- --------------------------------------------------------
 
@@ -290,7 +325,7 @@ CREATE TABLE IF NOT EXISTS `django_migrations` (
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `django_migrations`
@@ -319,7 +354,9 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (20, 'core', '0002_customuser_birthday_customuser_gender_and_more', '2024-10-23 14:53:39.137477'),
 (21, 'core', '0003_challenge', '2024-10-24 10:15:31.856058'),
 (22, 'core', '0004_testcase', '2024-10-27 04:58:28.625929'),
-(23, 'core', '0005_challenge_template_code', '2024-10-31 06:50:19.256545');
+(23, 'core', '0005_challenge_template_code', '2024-10-31 06:50:19.256545'),
+(24, 'core', '0006_customuser_points', '2024-12-22 11:36:50.726121'),
+(25, 'core', '0007_userchallenge', '2024-12-23 16:55:49.493422');
 
 -- --------------------------------------------------------
 
@@ -348,7 +385,9 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('rwy7pj80junc3rvs0afhh4n9gn9vclly', '.eJxVjEEOwiAQRe_C2hAcBhCX7j0DYZipVA1NSrsy3l2bdKHb_977L5XyutS0dpnTyOqsrDr8bpTLQ9oG-J7bbdJlass8kt4UvdOurxPL87K7fwc19_qtiUxmfxJ39DaIOBjEYIhggWCgEJiRYkZP0ZYoyMRkTQEEDEXIgXp_APVHOF0:1t4zdd:MzCzVS44m3CYxhVXqdmivAGCEygZjBunvK5AEHW8OKk', '2024-11-10 09:32:45.167738'),
 ('g5jxh0dnfnpmslu8phyh28rhtkfc4qhl', '.eJxVjDsOwjAQBe_iGll4vf5ASc8ZLHt3hQPIluKkQtwdIqWA9s3Me6mU16WmdcicJlZnherwu5VMD2kb4Htut66pt2Weit4UvdOhr53ledndv4OaR_3WkcCgFHBoJeKJwQJ65GgIskegYA0xOTlS4EAFi-VsI4MJ1mERr94fzl03lQ:1t3d94:mv5BpblvJ0o5-Yw-0fO3LwtPr-b1BRHxMbR6SLXWZbw', '2024-11-06 15:19:34.524947'),
 ('48oimchiyvuy71asrrc5kliqc6u3ry60', '.eJxVjEEOwiAQRe_C2hAcBhCX7j0DYZipVA1NSrsy3l2bdKHb_977L5XyutS0dpnTyOqsrDr8bpTLQ9oG-J7bbdJlass8kt4UvdOurxPL87K7fwc19_qtiUxmfxJ39DaIOBjEYIhggWCgEJiRYkZP0ZYoyMRkTQEEDEXIgXp_APVHOF0:1t6PYs:2dOzLaWvkOumZk8Vbjzwnz5EUA_Qw-ZloAIADYu0niY', '2024-11-14 07:25:42.099723'),
-('fh2owom6aux1u17wsc5h9ac3u86epv91', '.eJxVjEEOwiAQRe_C2hAcBhCX7j0DYZipVA1NSrsy3l2bdKHb_977L5XyutS0dpnTyOqsrDr8bpTLQ9oG-J7bbdJlass8kt4UvdOurxPL87K7fwc19_qtiUxmfxJ39DaIOBjEYIhggWCgEJiRYkZP0ZYoyMRkTQEEDEXIgXp_APVHOF0:1t8kJM:OkQ5cjgEUas17JtANK0Gv446DLm7sVS04g_CIRRMQeI', '2024-11-20 17:59:20.596683');
+('fh2owom6aux1u17wsc5h9ac3u86epv91', '.eJxVjEEOwiAQRe_C2hAcBhCX7j0DYZipVA1NSrsy3l2bdKHb_977L5XyutS0dpnTyOqsrDr8bpTLQ9oG-J7bbdJlass8kt4UvdOurxPL87K7fwc19_qtiUxmfxJ39DaIOBjEYIhggWCgEJiRYkZP0ZYoyMRkTQEEDEXIgXp_APVHOF0:1t8kJM:OkQ5cjgEUas17JtANK0Gv446DLm7sVS04g_CIRRMQeI', '2024-11-20 17:59:20.596683'),
+('r98wd5x8rok6m1dhr133noxohtbmfmtm', '.eJxVjEEOwiAQRe_C2hAQOkNduu8ZyMAMUjVtUtqV8e7apAvd_vfef6lI21rj1mSJI6uLAnX63RLlh0w74DtNt1nneVqXMeld0QdtephZntfD_Tuo1Oq3RqAcbO8dmo58AnRGiDMgsCu-d7k3Fp0IFg7WgQ0CKHwOnaeSjLXq_QHN6DdS:1tPwrJ:YT7qnkCHPTqLgshpvY8NA0K0e0z_yH-C6pMjBzNJApg', '2025-01-07 04:49:29.173184'),
+('y2yb2xbb6zigk3powkvv4l6rv8h28tfg', 'e30:1tPQWg:oJ5KrhuKV9vR9HEN1NPIrraxlheo1kAc3S-1M8S_Bio', '2025-01-05 18:18:02.195604');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -1,19 +1,21 @@
 {% extends 'base.html' %}
+{% load static%}
+{% block title %} Challenge List - DEVBIT{% endblock %}
 
-{% block title %}
-Challenge List - DEVBIT
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'challengeList_styles.css' %}" />
 {% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h1>Challenge List</h1>
+    <h1 class="intro">Challenge List</h1>
     {% if user.is_superuser %}
     <a href="{% url 'add_challenge' %}" class="btn btn-success mb-3">Add New Challenge</a>
     {% endif %}
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>#</th>
+                <th></th>
                 <th>Title</th>
                 <th>Difficulty</th>
                 <th>Description</th>
@@ -22,26 +24,25 @@ Challenge List - DEVBIT
         </thead>
         <tbody>
             {% for challenge in challenges %}
-            <tr>
+            <tr class="challenge">
                 <td>{{ forloop.counter }}</td>
                 <td><a href="{% url 'challenge_detail' challenge.id %}">{{ challenge.title }}</a></td>
                 <td>{{ challenge.difficulty }}</td>
                 <td>{{ challenge.description|truncatewords:10 }}</td>
-                <td>
+                <td class="status"> 
                     {% if challenge.id in completed_challenges %}
-                    <span class="text-success">&#10004;</span> <!-- Tick mark -->
+                    <span class="text-success">COMPLETE</span> <!-- Tick mark -->
                     {% else %}
-                    <span class="text-danger">Incomplete</span>
+                    <span class="text-danger">INCOMPLETE</span>
                     {% endif %}
                 </td>
             </tr>
             {% empty %}
             <tr>
                 <td colspan="5">No challenges available.</td>
-            </tr>
+            </tr> 
             {% endfor %}
         </tbody>
     </table>
 </div>
-
 {% endblock %}

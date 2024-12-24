@@ -72,12 +72,12 @@ About Us - DevBit
         <h2>Meet the Developers</h2>
         <div class="developer-profile">
             <img src="{% static 'images/pfp.jpg' %}" alt="Rohit" class="developer-image">
-            <h3>Rohit (Front-End Developer)</h3>
+            <h3>Rohit <span>(Front-End Developer)</span></h3>
             <p>Rohit was responsible for designing and implementing the front-end of the platform. His focus on creating a user-friendly and visually appealing experience has been key to the platform's success.</p>
         </div>
         <div class="developer-profile">
             <img src="{% static 'images/js_profile.jpg' %}" alt="You" class="developer-image">
-            <h3>Jayasurya Sudhakaran (Back-End Developer)</h3>
+            <h3>Jayasurya Sudhakaran <span>(Back-End Developer)</span></h3>
             <p>As the back-end developer, I handled the server-side logic, database interactions, and integrated the functionality that powers the platform. My goal was to ensure smooth and efficient operations for all users.</p>
         </div>
     </section>
@@ -98,17 +98,16 @@ About Us - DevBit
         height: 100%;
         margin: 0;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        scrollbar-width: none !important;
     }
 
     .about-container {
-        max-width: 900px;
+        max-width: 70vw;
         margin: 0 auto;
-        padding: 30px;
+        padding: 2rem;
         background: #fff;
         border-radius: 8px;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-        max-height: 100vh;
-        overflow-y: auto;
     }
 
     .hero-section {
@@ -149,7 +148,7 @@ About Us - DevBit
 
     blockquote {
         background: #f9f9f9;
-        border-left: 5px solid #4caf50;
+        border-left: 5px solid #5fb54e;
         padding: 15px;
         margin: 20px 0;
         font-style: italic;
@@ -164,6 +163,11 @@ About Us - DevBit
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .developer-profile span{
+        font-size: small;
+        line-height: normal !;
     }
 
     .developer-image {
@@ -194,7 +198,7 @@ About Us - DevBit
     }
 
     .contact-section a {
-        color: #4caf50;
+        color: #5fb54e;
         text-decoration: none;
     }
 

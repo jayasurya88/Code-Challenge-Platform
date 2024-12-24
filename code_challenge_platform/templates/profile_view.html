@@ -25,7 +25,7 @@
     </div>
 
     <script>
-        const contributions = {{ contributions_per_day|safe }};  // Pass from Django context
+        const contributions = {{ contributions_per_day|safe }};
         const graph = document.getElementById('contribution-graph');
         const startDate = new Date();
         

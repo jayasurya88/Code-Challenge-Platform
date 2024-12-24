@@ -1,0 +1,17 @@
+.intro{
+  text-align: center;
+}
+
+.challenge td a{
+  text-decoration: none;
+  color : black;
+  font-weight: bold;
+}
+
+.challenge td a:hover{
+  text-decoration: underline;
+}
+
+.status span {
+  text-align: center;
+}
