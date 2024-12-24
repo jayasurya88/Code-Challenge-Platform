@@ -21,6 +21,8 @@ def index (request):
     return render(request,'index.html')
 def home (request):
     return render(request,'home.html')
+def about (request):
+    return render(request,'about.html')
 
 def register_view(request):
     return render (request,"register.html")
@@ -246,12 +248,32 @@ def profile_edit(request):
     return render(request, 'profile_edit.html', context)
 
 
+from datetime import timedelta, date
+from django.db.models import Sum
+
+# views.py
+from django.shortcuts import render
+from django.db.models import Count
+from datetime import datetime, timedelta
+
 def profile_view(request):
     user = request.user
-    return render(request, 'profile_view.html', {'user': user})
+    start_date = datetime.now() - timedelta(days=365)  # last 365 days
+    
+    # Query the completed challenges for the user in the last 365 days
+    user_challenges = UserChallenge.objects.filter(
+        user=user,
+        completed_at__gte=start_date
+    ).values('completed_at__date').annotate(count=Count('id')).order_by('completed_at__date')
 
-
-
+    # Prepare the data for the frontend
+    contributions_per_day = {str(contrib['completed_at__date']): contrib['count'] for contrib in user_challenges}
+    
+    # Pass data to the template
+    context = {
+        'contributions_per_day': contributions_per_day
+    }
+    return render(request, 'profile_view.html', context)
 
 # views.py
 from django.shortcuts import render, get_object_or_404
@@ -259,8 +281,13 @@ from django.shortcuts import render
 from .models import Challenge
 
 def challenge_list(request):
-    challenges = Challenge.objects.all()  # Fetch all Challenge objects
-    return render(request, 'challenge_list.html', {'challenges': challenges})
+    challenges = Challenge.objects.all()
+    completed_challenges = UserChallenge.objects.filter(user=request.user).values_list('challenge_id', flat=True)
+
+    return render(request, 'challenge_list.html', {
+        'challenges': challenges,
+        'completed_challenges': completed_challenges,
+    })
 
 
 def challenge_detail(request, id):
@@ -344,13 +371,37 @@ import base64
 from django.shortcuts import render
 from django.http import JsonResponse
 
-RAPIDAPI_KEY = "756e517a77msh58ac762d967fff7p128ae3jsnc233287d404d"
+# List of RapidAPI keys
+RAPIDAPI_KEYS = [
+    "756e517a77msh58ac762d967fff7p128ae3jsnc233287d404d",
+    "8ede8ff6dcmshcc206ea377c20c6p1db6bfjsnd3bcd1169d5e",
+    
+    
+]
+
+# Track usage per key
+key_usage = {key: 0 for key in RAPIDAPI_KEYS}
+DAILY_LIMIT = 100  # Example daily limit per key
+current_key_index = 0  # Start with the first key
+
 API_HOST = "judge0-ce.p.rapidapi.com"
+
+
 
 # In views.py
 from django.shortcuts import render, get_object_or_404
 from .models import Challenge
-
+def get_rapidapi_key():
+    global current_key_index
+    key = RAPIDAPI_KEYS[current_key_index]
+    
+    # Check if the current key has reached its limit
+    if key_usage[key] >= DAILY_LIMIT:
+        current_key_index = (current_key_index + 1) % len(RAPIDAPI_KEYS)
+        key = RAPIDAPI_KEYS[current_key_index]
+    
+    return key
+ 
 def code_editor(request, challenge_id):
     challenge = get_object_or_404(Challenge, id=challenge_id)
     context = {
@@ -372,13 +423,11 @@ LANGUAGE_IDS = {
 
 
 
-import base64
-import requests
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
+from .models import UserChallenge  # Ensure this model is imported
 
 def submit_code(request, challenge_id):
     if request.method == "POST":
+        user = request.user  # Get the currently logged-in user
         challenge = get_object_or_404(Challenge, id=challenge_id)
         source_code = request.POST.get("source_code")
         language = request.POST.get("language")
@@ -389,6 +438,7 @@ def submit_code(request, challenge_id):
         # Retrieve all test cases for the challenge
         test_cases = challenge.test_cases.all()
         results = []
+        all_passed = True  # Track if all test cases pass
 
         for test_case in test_cases:
             payload = {
@@ -397,38 +447,38 @@ def submit_code(request, challenge_id):
                 "stdin": base64.b64encode(test_case.input_data.encode("utf-8")).decode("utf-8"),
                 "base64_encoded": "true"
             }
+
+            key = get_rapidapi_key()
             headers = {
-                "x-rapidapi-key": RAPIDAPI_KEY,
+                "x-rapidapi-key": key,
                 "x-rapidapi-host": API_HOST,
                 "Content-Type": "application/json"
             }
 
-            
             response = requests.post(f"https://{API_HOST}/submissions", json=payload, headers=headers)
-            print("Submission API response:", response.json())  # Log the response
 
+            # Log the response and increment usage
+            print("Submission API response:", response.json())
             if response.status_code == 201:
                 token = response.json().get("token")
-                result = get_result(token)  
+                key_usage[key] += 1
+                result = get_result(token)
 
-                
-                print("Result object:", result)  
-
-                # Decode the output
+                print("Result object:", result)
                 output, error_output, compile_output = decode_outputs(result)
-
-               
                 expected_output = test_case.expected_output.strip() if test_case.expected_output else ""
 
-                
                 if error_output:
                     status = "Runtime Error"
+                    all_passed = False  # Mark as not fully passed
                 elif compile_output:
                     status = "Compilation Error"
+                    all_passed = False
                 elif output.strip() == expected_output:
                     status = "Accepted"
                 else:
                     status = "Wrong Answer"
+                    all_passed = False
 
                 results.append({
                     "input": test_case.input_data,
@@ -438,22 +488,52 @@ def submit_code(request, challenge_id):
                 })
             else:
                 results.append({"error": "Code submission failed."})
+                all_passed = False
 
-        return JsonResponse({"results": results})
+        # Check if the challenge has already been completed by the user
+        if UserChallenge.objects.filter(user=user, challenge=challenge).exists():
+            # Skip points addition for already completed challenge, just return the results
+            return JsonResponse({"results": results, "points_awarded": 0})
+
+        # Award points if all test cases are passed
+        if all_passed:
+            # Define point system based on challenge difficulty
+            difficulty_points = {
+                "Easy": 10,
+                "Medium": 20,
+                "Hard": 30,
+            }
+            points = difficulty_points.get(challenge.difficulty, 0)
+
+            # Add points to the user
+            if hasattr(user, "add_points"):
+                user.add_points(points)
+
+                # Add the completed challenge to UserChallenge
+                UserChallenge.objects.create(user=user, challenge=challenge)
+
+                return JsonResponse({"results": results, "points_awarded": points})
+            else:
+                return JsonResponse({"results": results, "error": "User model does not support points."}, status=400)
+
+        return JsonResponse({"results": results, "points_awarded": 0})
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
+
 def get_result(token):
+    key = get_rapidapi_key()
     headers = {
-        "x-rapidapi-key": RAPIDAPI_KEY,
+        "x-rapidapi-key": key,
         "x-rapidapi-host": API_HOST
     }
     params = {"base64_encoded": "true"}  
     response = requests.get(f"https://{API_HOST}/submissions/{token}", headers=headers, params=params)
 
-
-    print("Get result API response:", response.json())  
-
+    # Log the response and increment usage
+    print("Get result API response:", response.json())
+    if response.status_code == 200:
+        key_usage[key] += 1
     return response.json()
 
 def decode_outputs(result):
@@ -481,3 +561,14 @@ def add_padding(b64_string):
             b64_string += '=' * (4 - missing_padding)
     return b64_string
 
+
+
+
+from django.shortcuts import render
+from .models import CustomUser
+
+def leaderboard(request):
+    # Filter out admin users and users with less than 5 points
+    users = CustomUser.objects.filter(is_superuser=False, points__gte=5).order_by('-points')
+    
+    return render(request, 'leaderboard.html', {'users': users})

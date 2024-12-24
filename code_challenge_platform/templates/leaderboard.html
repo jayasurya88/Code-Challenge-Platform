@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Leaderboard - DEVBIT
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Leaderboard</h1>
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>User</th>
+                <th>Profile Picture</th>
+                <th>Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>
+                        {% if user.profile_picture %}
+                            <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="rounded-circle" width="40" height="40">
+                        {% else %}
+                            <img src="https://via.placeholder.com/40" class="rounded-circle" alt="Default Profile Picture">
+                        {% endif %}
+                    </td>
+                    <td>{{ user.points }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">No users found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
