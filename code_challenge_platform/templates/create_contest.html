@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form method="POST">
+        {% csrf_token %}
+        <label>Contest Name:</label>
+        <input type="text" name="name" required>
+        
+        <label>Start Time:</label>
+        <input type="datetime-local" name="start_time" required>
+        
+        <label>Duration (minutes):</label>
+        <input type="number" name="duration" required>
+        
+        <label>Select Challenges:</label>
+        <ul>
+            {% for challenge in challenges %}
+            <li>
+                <input type="checkbox" name="challenges" value="{{ challenge.id }}">
+                {{ challenge.title }}
+            </li>
+            {% endfor %}
+        </ul>
+        
+        <button type="submit">Create Contest</button>
+    </form>
+    
+</body>
+</html>

@@ -30,9 +30,16 @@ urlpatterns = [
     path("result/<str:token>/", views.get_result, name="get_result"),
     path('challenge/<int:challenge_id>/code_editor/', views.code_editor, name='code_editor'),
     path('leaderboard/', views.leaderboard, name='leaderboard'),
+    path('contest/<int:contest_id>/context/', views.contest_context, name='contest_context'),
     # Other URL patterns...
 
     
  
     path('challenge/<int:challenge_id>/code_editor/', views.code_editor, name='code_editor'),
+    path("create-contest/", views.create_contest, name="create_contest"),
+    path("join-contest/", views.join_contest, name="join_contest"),
+     path('contest/<int:contest_id>/<int:challenge_id>/', views.contest_detail, name='contest_detail'),
+
+    path("contest/<int:contest_id>/challenge/<int:challenge_id>/submit/", views.submit_code, name="submit_code"),
+    path("contest/<int:contest_id>/leaderboard/", views.leaderboard, name="leaderboard"),
 ]

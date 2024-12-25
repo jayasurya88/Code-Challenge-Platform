@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contest Created</title>
+</head>
+<body>
+    <h1>Contest Created Successfully!</h1>
+    <p>Your contest has been created. Share the entry code below with participants:</p>
+    
+    <div style="border: 2px dashed #007BFF; padding: 20px; text-align: center; font-size: 20px;">
+        <strong>Entry Code:</strong> {{ entry_code }}
+    </div>
+
+    
+    <a href="{% url 'create_contest' %}">Create Another Contest</a>
+</body>
+</html>

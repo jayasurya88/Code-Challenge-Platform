@@ -53,3 +53,41 @@ class UserChallenge(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.challenge.title}"
+    
+
+class Contest(models.Model):
+    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="created_contests")
+    name = models.CharField(max_length=255)
+    entry_code = models.CharField(max_length=10, unique=True)  # Random code for joining
+    challenges = models.ManyToManyField(Challenge, related_name="contests")
+    start_time = models.DateTimeField()
+    duration = models.DurationField()  # Length of the contest
+    is_active = models.BooleanField(default=True)  # To deactivate completed contests
+
+    def end_time(self):
+        """Calculate the contest end time."""
+        return self.start_time + self.duration
+
+    def __str__(self):
+        return self.name
+
+
+class ContestParticipant(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="contest_participations")
+    contest = models.ForeignKey(Contest, on_delete=models.CASCADE, related_name="participants")
+    joined_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.contest.name}"
+
+
+class ContestSubmission(models.Model):
+    participant = models.ForeignKey(ContestParticipant, on_delete=models.CASCADE, related_name="submissions")
+    challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
+    code = models.TextField()
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    is_correct = models.BooleanField(default=False)
+    score = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.participant.user.username} - {self.challenge.title} - {self.score} points"

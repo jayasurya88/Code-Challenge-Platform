@@ -572,3 +572,142 @@ def leaderboard(request):
     users = CustomUser.objects.filter(is_superuser=False, points__gte=5).order_by('-points')
     
     return render(request, 'leaderboard.html', {'users': users})
+
+
+
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.utils.timezone import now
+from django.contrib.auth.decorators import login_required
+from .models import Contest, Challenge, ContestParticipant, ContestSubmission
+import random
+import string
+from django.http import JsonResponse
+
+def generate_entry_code():
+    """Generate a random 6-character alphanumeric code."""
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+
+
+from datetime import timedelta
+from django.shortcuts import render, redirect
+from datetime import timedelta
+
+
+from django.shortcuts import render, redirect
+from django.utils.dateparse import parse_datetime
+from .models import Contest, Challenge
+from datetime import timedelta
+
+@login_required
+def create_contest(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        challenge_ids = request.POST.getlist("challenges")
+        start_time = request.POST.get("start_time")
+        duration_minutes = int(request.POST.get("duration"))  # Duration in minutes
+
+        # Convert duration to timedelta
+        duration = timedelta(minutes=duration_minutes)
+
+        # Parse the start_time string into a datetime object
+        start_time = parse_datetime(start_time)
+        if not start_time:
+            return render(request, "create_contest.html", {"error": "Invalid start time format."})
+
+        # Generate unique entry code
+        entry_code = generate_entry_code()
+
+        # Validate that all challenges exist
+        challenges = Challenge.objects.filter(id__in=challenge_ids)
+        if challenges.count() != len(challenge_ids):
+            return render(request, "create_contest.html", {"error": "One or more challenges do not exist."})
+
+        # Create contest
+        contest = Contest.objects.create(
+            creator=request.user,
+            name=name,
+            entry_code=entry_code,
+            start_time=start_time,
+            duration=duration
+        )
+        contest.challenges.set(challenges)
+
+        # Redirect to success page and pass entry code
+        return render(request, "contest_created.html", {"entry_code": entry_code})
+
+    challenges = Challenge.objects.all()
+    return render(request, "create_contest.html", {"challenges": challenges})
+
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Contest, ContestParticipant
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Contest, ContestParticipant
+
+def join_contest(request):
+    if request.method == "POST":
+        entry_code = request.POST.get("entry_code")
+        
+        # Ensure that the contest with this entry code exists
+        contest = get_object_or_404(Contest, entry_code=entry_code)
+
+        # Check if the user is already a participant
+        if not ContestParticipant.objects.filter(user=request.user, contest=contest).exists():
+            ContestParticipant.objects.create(user=request.user, contest=contest)
+
+        # Retrieve the first challenge, if available
+        first_challenge = contest.challenges.first()
+        
+        if first_challenge:
+            # Redirect to the contest_detail view with both contest_id and challenge_id
+            return redirect("contest_detail", contest_id=contest.id, challenge_id=first_challenge.id)
+
+        return render(request, "join_contest.html", {"error": "No challenges available for this contest."})
+
+    return render(request, "join_contest.html")
+
+
+from django.shortcuts import get_object_or_404, render
+
+def contest_detail(request, contest_id, challenge_id):
+    contest = get_object_or_404(Contest, id=contest_id)
+    challenge = get_object_or_404(Challenge, id=challenge_id)
+    
+    # Pass both contest and challenge to the template
+    return render(request, "contest_detail.html", {
+        "contest": contest,
+        "challenge": challenge,
+        "contest_id": contest_id,
+        "challenge_id": challenge_id,
+        "template_code": challenge.template_code,
+    })
+
+
+from .models import Contest, Challenge, ContestParticipant, ContestSubmission
+@login_required
+def contest_leaderboard(request, contest_id):
+    contest = get_object_or_404(Contest, id=contest_id)
+
+    # Aggregate scores for each participant
+    leaderboard_data = (
+        ContestParticipant.objects.filter(contest=contest)
+        .annotate(total_score=models.Sum("submissions__score"))
+        .order_by("-total_score", "joined_at")
+    )
+
+    return render(request, "contest_leaderboard.html", {"contest": contest, "leaderboard": leaderboard_data})
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import Contest
+
+def contest_context(request, contest_id):
+    # Retrieve the contest using the contest_id
+    contest = get_object_or_404(Contest, id=contest_id)
+
+    # Pass the contest to the template
+    return render(request, 'contest_context.html', {'contest': contest})

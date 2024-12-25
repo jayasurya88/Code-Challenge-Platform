@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Contest Detail - DEVBIT {% endblock %}
+
+{% block extra_styles %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+{% endblock %}
+
+{% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
+<script>
+    let editor;
+
+    window.onload = function() {
+        editor = CodeMirror.fromTextArea(document.getElementById("sourceCode"), {
+            lineNumbers: true,
+            mode: "text/x-csrc", // Default mode (C/C++)
+            theme: "default",
+            autoCloseBrackets: true
+        });
+    };
+
+    function escapeHTML(html) {
+        const div = document.createElement('div');
+        div.appendChild(document.createTextNode(html));
+        return div.innerHTML;
+    }
+
+    async function submitCode() {
+        const sourceCode = editor.getValue();
+        const language = document.getElementById("languageSelector").value;
+
+        document.getElementById("testCaseResults").textContent = "Running code...";
+
+        try {
+            const response = await fetch("{% url 'submit_code' challenge.id %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: new URLSearchParams({
+                    "source_code": sourceCode,
+                    "language": language
+                })
+            });
+
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                const result = await response.json();
+
+                if (result.results) {
+                    displayTestCaseResults(result.results);
+                } else {
+                    document.getElementById("testCaseResults").textContent = `Error: ${result.error || "Failed to submit code."}`;
+                }
+            } else {
+                const text = await response.text();
+                document.getElementById("testCaseResults").innerHTML = `Error: Received non-JSON response.<br><pre>${text}</pre>`;
+            }
+        } catch (error) {
+            document.getElementById("testCaseResults").textContent = `Error: ${error.message || "An unexpected error occurred."}`;
+        }
+    }
+
+    function displayTestCaseResults(results) {
+        const resultsContainer = document.getElementById("testCaseResults");
+        resultsContainer.innerHTML = "";
+
+        results.forEach((testCase, index) => {
+            const resultDiv = document.createElement("div");
+            resultDiv.className = "mb-3 p-3 border rounded";
+
+            const status = testCase.status === "Accepted" ? "✅ Accepted" : "❌ Wrong Answer";
+            resultDiv.innerHTML = ` 
+                <strong>Test Case ${index + 1}:</strong> ${status}<br>
+                <strong>Input:</strong> <pre>${escapeHTML(testCase.input)}</pre>
+                <strong>Expected Output:</strong> <pre>${escapeHTML(testCase.expected)}</pre>
+                <strong>Your Output:</strong> <pre>${escapeHTML(testCase.output)}</pre>
+            `;
+            resultsContainer.appendChild(resultDiv);
+        });
+    }
+</script>
+
+<div class="container mt-5">
+    <h1 class="text-center">{{ contest.name }} - Challenge: {{ challenge.title }}</h1>
+
+    <p><strong>Start Time:</strong> {{ contest.start_time }}</p>
+    <p><strong>Duration:</strong> {{ contest.duration }}</p>
+
+    <h2>Challenge Details</h2>
+    <p>{{ challenge.description }}</p>
+    <p><strong>Input Format:</strong> {{ challenge.input_format }}</p>
+    <p><strong>Output Format:</strong> {{ challenge.output_format }}</p>
+    <p><strong>Examples:</strong> {{ challenge.examples }}</p>
+
+    <div class="mb-3">
+        <label for="languageSelector" class="form-label">Select Language:</label>
+        <select id="languageSelector" class="form-select" onchange="changeMode()">
+            <option value="cpp">C++</option>
+            <option value="python">Python</option>
+            <option value="java">Java</option>
+            <option value="javascript">JavaScript</option>
+        </select>
+    </div>
+
+    <!-- Code Editor Textarea -->
+    <div class="mb-3">
+        <label for="sourceCode" class="form-label">Enter your code:</label>
+        <textarea id="sourceCode" class="form-control" rows="10">{{ template_code|safe }}</textarea>
+    </div>
+
+    <button class="btn btn-primary" onclick="submitCode()">Run Code</button>
+
+    <h2 class="mt-4">Test Case Results:</h2>
+    <div id="testCaseResults" class="bg-white p-3 border rounded"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+{% endblock %}
