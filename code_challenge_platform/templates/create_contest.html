@@ -3,11 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Create Contest</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px 30px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #4a90e2;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="datetime-local"],
+        input[type="number"],
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        input[type="text"]:focus,
+        input[type="datetime-local"]:focus,
+        input[type="number"]:focus {
+            border-color: #4a90e2;
+            outline: none;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        button {
+            background-color: #4a90e2;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #357ab8;
+        }
+
+        @media (max-width: 600px) {
+            form {
+                padding: 15px 20px;
+            }
+
+            input[type="text"],
+            input[type="datetime-local"],
+            input[type="number"],
+            button {
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
     <form method="POST">
         {% csrf_token %}
+        <h2>Create a Contest</h2>
         <label>Contest Name:</label>
         <input type="text" name="name" required>
         
@@ -29,6 +126,5 @@
         
         <button type="submit">Create Contest</button>
     </form>
-    
 </body>
 </html>
