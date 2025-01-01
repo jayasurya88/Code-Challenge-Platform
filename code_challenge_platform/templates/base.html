@@ -25,7 +25,7 @@
                 <ul>
                     <a href="{% url 'index' %}">HOME</a>
                     <a href="{% url 'challenge_list' %}">PRACTICE</a>
-                    <a href="{% url 'about' %}">ABOUT</a>
+                    <!-- <a href="{% url 'about' %}">ABOUT</a> -->
                     
                     {% if user.is_authenticated %}
                         <a href="{% url 'profile_view' %}">PROFILE</a>
